@@ -1,0 +1,50 @@
+- platform: template
+  sensors:
+    both_home:
+      friendly_name: 'Both Home'
+      value_template: >-
+        {{ is_state('binary_sensor.scott_presence', 'on')
+           and is_state('binary_sensor.steph_presence', 'on')
+        }}
+
+- platform: bayesian
+  prior: 0.36
+  name: 'Scott Presence'
+  probability_threshold: 0.9
+  observations:
+    - entity_id: 'device_tracker.scotts_iphone'
+      prob_given_true: 0.8
+      prob_given_false: 0.1
+      platform: 'state'
+      to_state: 'home'
+    - entity_id: 'device_tracker.srp_iphone'
+      prob_given_true: 0.9
+      prob_given_false: 0.2
+      platform: 'state'
+      to_state: 'home'
+    - entity_id: 'device_tracker.scotts_iphone_bt'
+      prob_given_true: 0.9
+      prob_given_false: 0.4
+      platform: 'state'
+      to_state: 'home'
+
+- platform: bayesian
+  prior: 0.36
+  name: 'Steph Presence'
+  probability_threshold: 0.9
+  observations:
+    - entity_id: 'device_tracker.stephs_iphone'
+      prob_given_true: 0.8
+      prob_given_false: 0.1
+      platform: 'state'
+      to_state: 'home'
+    - entity_id: 'device_tracker.stephs_apwa_bt'
+      prob_given_true: 0.9
+      prob_given_false: 0.2
+      platform: 'state'
+      to_state: 'home'
+    - entity_id: 'device_tracker.stephs_iphone_bt'
+      prob_given_true: 0.9
+      prob_given_false: 0.4
+      platform: 'state'
+      to_state: 'home'

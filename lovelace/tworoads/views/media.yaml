@@ -1,0 +1,10 @@
+#title: Media
+icon: mdi:library-music
+path: media
+theme: default
+badges: []
+cards:
+  - entity: media_player.kitchen
+    type: media-control
+  - entity: media_player.den
+    type: media-control

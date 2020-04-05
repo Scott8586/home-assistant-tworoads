@@ -1,0 +1,277 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Tworoads
+  # Location required to calculate the time the sun rises and sets
+  latitude: !secret tworoads_latitude
+  longitude: !secret tworoads_longitude
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 100
+  # metric for Metric, imperial for Imperial
+  unit_system: imperial
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: America/Los_Angeles
+  # Customization file
+  customize: !include customize.yaml
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# iOS setup
+ios:
+
+# Discover some devices automatically
+discovery:
+
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+# http:
+#   base_url: example.duckdns.org:8123
+http:
+  ssl_certificate:  !secret ssl_certificate
+  ssl_key:          !secret ssl_key
+
+telegram_bot:
+  - platform: polling # polling or broadcast
+    api_key: !secret telegram_apikey
+    parse_mode: html # otherwise '_' are interpreted as for italics in msg parser
+    allowed_chat_ids:
+      - !secret telegram_chatid # First chat Group "HA Tworoads"
+      - !secret telegram_userid # "Scott"
+
+notify:
+  - name: telegram_tworoads
+    platform: telegram
+    api_key: !secret telegram_apikey
+    chat_id: !secret telegram_chatid
+
+device_tracker:
+  - platform: mqtt
+    devices:
+      scotts_iphone_bt: 'monitor/tworoads_den/scotts_iphone_bt/device_tracker'
+      stephs_iphone_bt: 'monitor/tworoads_den/stephs_iphone_bt/device_tracker'
+      stephs_apwa_bt: 'monitor/tworoads_den/stephs_apwa_bt/device_tracker'
+      scotts_g645_bt: 'monitor/tworoads_den/scotts_g645_bt/device_tracker'
+      audi_bt: 'monitor/tworoads_garage/audi/device_tracker'
+      explorer_bt: 'monitor/tworoads_garage/explorer/device_tracker'
+      rav4_bt: 'monitor/tworoads_garage/rav4/device_tracker'
+
+camera:
+  - platform: uvc
+    nvr: !secret uvc_host
+    # port: 7443
+    key: !secret uvc_key
+    password: !secret uvc_pass
+    ssl: false
+
+logger:
+  default: info
+  logs:
+    homeassistant.components.automation: debug
+#    homeassistant.components.media_player: warning
+#    aiounifi: debug
+#    homeassistant.components.unifi: debug
+
+pi_hole:
+  - host: !secret tworoads_pihole_host
+    name: Tworoads Pi-hole
+
+# Sensors
+sensor:
+  - platform: mitemp_bt
+    rounding: True
+    decimals: 1
+    period: 60
+    log_spikes: False
+    use_median: False
+    active_scan: False
+    hci_interface: 0
+    batt_entities: False
+#    name: Sensor1
+#    mac: '58:2D:34:34:DE:3C'
+#    monitored_conditions:
+#      - temperature
+#      - humidity
+  - platform: mqtt
+    state_topic: 'monitor/tworoads_garage/explorer'
+    value_template: '{{ value_json.rssi }}'
+    unit_of_measurement: 'dBm'
+    name: 'Explorer'
+  - platform: mqtt
+    state_topic: 'monitor/tworoads_garage/audi'
+    value_template: '{{ value_json.rssi }}'
+    unit_of_measurement: 'dBm'
+    name: 'Audi'
+  - platform: mqtt
+    state_topic: 'monitor/tworoads_garage/rav4'
+    value_template: '{{ value_json.rssi }}'
+    unit_of_measurement: 'dBm'
+    name: 'Rav4'
+  # Weewx Weather
+  - platform: rest
+    resource: http://192.168.37.157/weewx/daily.json
+    name: Weewx Weather
+    scan_interval: 150
+    force_update: true
+    json_attributes:
+      - current
+      - almanac
+    value_template: '{{ value_json.location }}'
+  # UPS
+  - platform: nut
+    name: Basement UPS
+    host: !secret ups_host
+    port: 3493
+    alias: ups
+    username: !secret ups_user
+    password: !secret ups_pass
+    resources:
+      - ups.load
+#      - ups.realpower.nominal
+      - input.voltage
+      - battery.runtime
+      - ups.status.display
+  # Local System monitor
+  - platform: systemmonitor
+    resources:
+      - type: memory_use_percent
+      - type: processor_use
+      - type: load_1m
+      - type: last_boot
+  # Template      
+  - platform: template
+    sensors:
+      basement_ups_battery_minutes:
+        friendly_name: "Basement UPS Battery Minutes"
+        entity_id:
+          - sensor.basement_ups_battery_runtime
+        value_template: "{{ ((states('sensor.basement_ups_battery_runtime')) | float / 60) | round(0) }}"
+        unit_of_measurement: "min"
+      load_1m_templated:
+        friendly_name: "CPU Load (1m)"
+        icon_template: mdi:memory
+        value_template: "{{ states('sensor.load_1m') | float | round(2) }}"
+      weewx_outside_temperature:
+        friendly_name: Outside Temperature
+        entity_id:
+          - sensor.weewx_weather
+        value_template: "{{ states.sensor.weewx_weather.attributes.current['outTemp'] }}"
+        unit_of_measurement: '°F'
+      weewx_inside_temperature:
+        friendly_name: Inside Temperature
+        entity_id:
+          - sensor.weewx_weather
+        value_template: "{{ states.sensor.weewx_weather.attributes.current['insideTemp'] }}"
+        unit_of_measurement: '°F'
+      weewx_outside_humidity:
+        friendly_name: Outside Humidity
+        entity_id:
+          - sensor.weewx_weather
+        icon_template: mdi:water-percent
+        value_template: "{{ states.sensor.weewx_weather.attributes.current['humidity'] }}"
+        unit_of_measurement: '%'
+      weewx_inside_humidity:
+        friendly_name: Inside Humidity
+        entity_id:
+          - sensor.weewx_weather
+        icon_template: mdi:water-percent
+        value_template: "{{ states.sensor.weewx_weather.attributes.current['insideHumidity'] }}"
+        unit_of_measurement: '%'
+      weewx_wind_speed:
+        friendly_name: Wind Speed
+        entity_id:
+          - sensor.weewx_weather
+        icon_template: mdi:weather-windy 
+        value_template: "{{ states.sensor.weewx_weather.attributes.current['windSpeed'] }}"
+        unit_of_measurement: 'mph'
+      weewx_wind_direction_ordinal:
+        friendly_name: Wind Direction
+        entity_id:
+          - sensor.weewx_weather
+        icon_template: mdi:weather-windy
+        value_template: "{{ states.sensor.weewx_weather.attributes.current['windDirText'] }}"
+      weewx_solar_altitude:
+        friendly_name: Solar Altitude
+        entity_id:
+          - sensor.weewx_weather
+        value_template: "{{ states.sensor.weewx_weather.attributes.almanac.sun['altitude'] }}"
+        unit_of_measurement: '°'
+      # http://www.csgnetwork.com/barcorrecthcalc.html - +11.1 for 300ft/100m
+      ambient_adjusted_pressure:
+        friendly_name: Ambient Adjusted Pressure
+        entity_id:
+          - sensor.ambient_pressure
+        icon_template: mdi:gauge
+        value_template: "{{ ((states('sensor.ambient_pressure')) | float + 11.1) | round(1) }}"
+        unit_of_measurement: 'mb'
+      tworoads_dns_query_rate:
+        friendly_name: DNS Query Rate
+        value_template: "{{ ((state_attr('sensor.tworoads_pi_hole_dns_queries_today_statistics','average_change')) | float * 2) }}"
+        unit_of_measurement: 'queries per min'
+  # CPU Temperature of pi
+  - platform: command_line
+    name: CPU Temperature
+    command: "cat /sys/class/thermal/thermal_zone0/temp"
+    value_template: "{{ value | multiply(0.001) | float | round(1) }} °C"
+#    unit_of_measurement: "°F"
+#    value_template: "{{ (value | multiply(0.0018) + 32) | float | round(2) }} °F"
+  - platform: statistics
+    name: tworoads_pi_hole_dns_queries_today_statistics
+    entity_id: sensor.tworoads_pi_hole_dns_queries_today
+  - platform: uptime
+  - platform: time_date
+    display_options:
+      - 'time'
+      - 'date'
+      - 'date_time'
+      - 'date_time_utc'
+      - 'date_time_iso'
+      - 'time_date'
+      - 'time_utc'
+  - platform: snmp
+    host: 192.168.37.162
+    baseoid: .1.3.6.1.2.1.25.1.8.1
+    name: raspi_den_tr_cpu_temperature
+    value_template: '{{ value }} °C'
+# Add the moon
+  - platform: moon
+
+switch:
+  - platform: command_line
+    switches:
+      tworoads_pi_hole:
+        command_on: !secret tworoads_pihole_enable
+        command_off: !secret tworoads_pihole_disable
+        command_state: !secret tworoads_pihole_status
+        value_template: "{{ value_json.status == 'enabled' }}"
+        
+weather:
+# Darksky
+  - platform: darksky
+    api_key: !secret darksky_api
+    mode: daily
+    scan_interval:
+      minutes: 15
+# NWS weather
+  - platform: nws
+    mode: daynight # default daynight
+    station: KTIW
+    api_key: srp@tworoads.net
+
+frontend:
+  # your configuration.
+  themes: !include_dir_merge_named themes
+  # your configuration.
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+lovelace:
+  mode: yaml
+
+history: !include history.yaml
+recorder: !include recorder.yaml
+# group: !include groups.yaml
+zone: !include zones.yaml
+binary_sensor: !include binary_sensor.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml

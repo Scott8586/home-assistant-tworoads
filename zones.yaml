@@ -1,0 +1,33 @@
+- name: Tworoads
+  latitude: !secret tworoads_latitude
+  longitude: !secret tworoads_longitude
+  radius: 100
+  icon: mdi:account-multiple
+
+- name: Vistasea
+  latitude: !secret vistasea_latitude
+  longitude: !secret vistasea_longitude
+#  elevation: 10
+  radius: 100
+  icon: mdi:account-multiple
+
+- name: BRI
+  latitude: !secret bri_latitude
+  longitude: !secret bri_longitude
+#  elevation: 100
+  radius: 100
+  icon: mdi:worker
+
+- name: GTH
+  latitude: !secret gth_latitude
+  longitude: !secret gth_longitude
+#  elevation: 25
+  radius: 100
+  icon: mdi:worker
+  
+- name: HorizonView
+  latitude: !secret hvw_latitude
+  longitude: !secret hvw_longitude
+#  elevation: 1000
+  radius: 100
+  icon: mdi:account-multiple

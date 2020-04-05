@@ -1,0 +1,74 @@
+#title: Net Ops
+icon: mdi:lan
+path: net-ops
+theme: default
+badges:
+  - entity: binary_sensor.updater
+cards:
+  - entities:
+      - entity: sensor.load_1m_templated
+      - entity: sensor.cpu_temperature
+      - entity: sensor.memory_use_percent
+      - entity: sensor.processor_use
+      - entity: sensor.last_boot
+    title: Local Machine
+    type: entities
+  - entities:
+      - sensor.basement_ups_status
+      - sensor.basement_ups_load
+      - sensor.basement_ups_input_voltage
+      - sensor.basement_ups_battery_minutes
+    title: Network Operations
+    type: entities
+  - type: entities
+    entities:
+      - automation.ios_test_command
+      - automation.telegram_test_command
+      - automation.sunset_message
+    title: Test Messages
+  - title: Remote Machines
+    type: entities
+    entities:
+      - entity: sensor.raspi_den_tr_cpu_temperature
+  - title: Host Control
+    show_name: true
+    show_state: true
+    type: glance
+    entities:
+      - entity: sensor.uptime
+        name: Lovelace UI
+        icon: 'mdi:restart'
+        tap_action:
+          action: call-service
+          service: automation.trigger
+          service_data:
+            entity_id: automation.home_assistant_reload_command
+      - entity: sensor.uptime
+        icon: 'mdi:restart'
+        name: Home Assistant
+        tap_action:
+          action: call-service
+          service: automation.trigger
+          service_data:
+            entity_id: automation.home_assistant_restart_command
+      - entity: sensor.last_boot
+        icon: 'mdi:restart'
+        name: HA Server
+        tap_action:
+          action: call-service
+          service: automation.trigger
+          service_data:
+            entity_id: automation.home_assistant_reboot_command
+  - title: Tworoads Pi-hole
+    type: entities
+    entities:
+        - entity: switch.tworoads_pi_hole
+          name: Pi-hole operation
+        - entity: sensor.tworoads_pi_hole_ads_percentage_blocked_today
+          name: Percentage ads blocked today
+          type: "custom:secondaryinfo-entity-row"
+          secondary_info: "[[ sensor.tworoads_pi_hole_dns_unique_clients ]] unique clients"
+        - entity: sensor.tworoads_pi_hole_dns_queries_today
+          name: Number of DNS requests today
+          type: "custom:secondaryinfo-entity-row"
+          secondary_info: "[[ sensor.tworoads_dns_query_rate ]] queries per min"

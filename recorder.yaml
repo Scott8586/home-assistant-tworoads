@@ -1,0 +1,12 @@
+purge_interval: 1
+purge_keep_days: 30
+exclude:
+  domains:
+  - automation
+  - weblink
+  - updater
+  - media_player
+  entities:
+  - sun.sun # Don't record sun data
+  - sensor.last_boot # Comes from 'systemmonitor' sensor platform
+  - sensor.date

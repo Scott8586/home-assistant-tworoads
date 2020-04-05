@@ -1,0 +1,23 @@
+#title: Weather
+icon: mdi:weather-sunny
+path: weather
+theme: default
+badges: []
+cards:
+  - entities:
+      - sensor.weewx_weather
+      - sensor.weewx_outside_temperature
+      - sensor.weewx_outside_humidity
+      - sensor.weewx_wind_speed
+      - sensor.weewx_wind_direction_ordinal
+      - sensor.weewx_inside_temperature
+      - sensor.weewx_inside_humidity
+    title: Weather Station
+    type: entities
+  - entities:
+      - sun.sun
+      - sensor.weewx_solar_altitude
+      - sensor.moon
+    title: Environment
+    type: entities
+

@@ -1,0 +1,50 @@
+title: Tworoads
+#icon: mdi:home
+path: default_view
+badges:
+  - entity: person.scott
+  - entity: person.stephanie
+  - entity: binary_sensor.scott_presence
+  - entity: binary_sensor.steph_presence
+  - entity: binary_sensor.both_home
+  - entity: device_tracker.explorer_bt
+  - entity: device_tracker.rav4_bt
+  - entity: device_tracker.audi_bt
+cards:
+  - entity: sensor.time
+    type: 'custom:bignumber-card'
+  - entity: weather.dark_sky
+    type: weather-forecast
+  - entity: weather.ktiw
+    type: weather-forecast
+  - entity: camera.tr_side_yard
+    type: picture-entity
+  - entities:
+      - sensor.rav4
+      - sensor.explorer
+      - sensor.audi
+    title: Cars
+    type: entities
+  - entity: sensor.mi_t_582d3434de3c
+    max: 100
+    min: 0
+    name: Kitchen
+    theme: default
+    type: gauge
+  - entities:
+      - device_tracker.scotts_iphone
+      - sensor.scott_s_iphone_battery_state
+      - sensor.scott_s_iphone_battery_level
+      - device_tracker.scotts_iphone_bt
+      - device_tracker.scotts_g645_bt
+      - device_tracker.scotts_ipad2
+      - device_tracker.scotts_personal_mbp
+      - device_tracker.scotts_work_mbp2
+      - device_tracker.stephs_iphone
+      - device_tracker.stephs_iphone_bt
+      - device_tracker.stephs_apple_watch
+      - device_tracker.stephs_apwa_bt
+      - device_tracker.stephs_ipad2
+      - device_tracker.nancys_ipad
+    title: Personal Devices
+    type: entities

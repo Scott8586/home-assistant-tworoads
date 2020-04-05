@@ -1,0 +1,86 @@
+#default_view:
+#  view: true
+#  icon: mdi:home
+#  entities:
+#    - group.den
+#    - group.kitchen
+
+all_automations:
+  name: Automation
+  control: hidden
+
+den:
+  name: Den
+  view: false
+  entities:
+    - media_player.den
+#    - media_player.home_un46f6300
+    
+kitchen:
+  name: Kitchen
+  view: false
+  entities:
+    - media_player.kitchen
+    
+basement:
+  name: Network Operations
+  control: hidden
+  entities:
+    - sensor.basement_ups_status
+    - sensor.basement_ups_load
+    - sensor.basement_ups_input_voltage
+    - sensor.basement_ups_battery_minutes
+
+localmachine:
+  name: This Machine
+  control: hidden
+  entities:
+    - sensor.cpu_temperature
+    - sensor.load_1m_templated
+    - sensor.processor_use
+    - sensor.memory_use_percent
+    - sensor.last_boot
+
+devices:
+  name: Personal Devices
+  control: hidden
+  entities:
+    - device_tracker.scotts_iphone
+    - sensor.scott_s_iphone_battery_state
+    - sensor.scott_s_iphone_battery_level
+    - device_tracker.scotts_iphone_bt
+    - device_tracker.scotts_g645_bt
+    - device_tracker.scotts_ipad2
+    - device_tracker.scotts_personal_mbp
+    - device_tracker.scotts_work_mbp2
+    - device_tracker.stephs_iphone
+    - device_tracker.stephs_iphone_bt
+    - device_tracker.stephs_apple_watch
+    - device_tracker.stephs_apwa_bt
+    - device_tracker.stephs_ipad2
+    - device_tracker.nancys_ipad
+
+    
+weewx:
+  name: Weather Station
+  control: hidden
+  entities:
+    - sensor.weewx_weather
+    - sensor.weewx_outside_temperature
+    - sensor.weewx_outside_humidity
+    - sensor.weewx_wind_speed
+    - sensor.weewx_wind_direction_ordinal
+    - sensor.weewx_inside_temperature
+    - sensor.weewx_inside_humidity
+    
+environment:
+  name: Environment
+  control: hidden
+  entities:
+    - sun.sun
+    - sensor.weewx_solar_altitude
+    - sensor.moon
+    - sensor.ambient_temperature
+    - sensor.ambient_humidity
+    - sensor.ambient_pressure
+    - sensor.ambient_adjusted_pressure
