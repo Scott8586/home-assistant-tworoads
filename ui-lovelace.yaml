@@ -1,17 +1,9 @@
 custom_header:
   compact_mode: true
-resources:
-  - url: /hacsfiles/bignumber-card/bignumber-card.js?v=0.0.2
-    type: module
-  - url: /hacsfiles/custom-header/custom-header.js?v=0.0.2
-    type: module
-  - url: /hacsfiles/lovelace-card-tools/card-tools.js
-    type: module
-  - url: /hacsfiles/secondaryinfo-entity-row/secondaryinfo-entity-row.js?=0.0.2
-    type: module
 title: Tworoads
 views:
   - !include /config/lovelace/tworoads/views/home.yaml
   - !include /config/lovelace/tworoads/views/weather.yaml
   - !include /config/lovelace/tworoads/views/media.yaml
   - !include /config/lovelace/tworoads/views/net_ops.yaml
+  - !include /config/lovelace/tworoads/views/sensors.yaml

@@ -6,7 +6,7 @@ badges:
   - entity: binary_sensor.updater
 cards:
   - entities:
-      - entity: sensor.load_1m_templated
+      - entity: sensor.load_1m
       - entity: sensor.cpu_temperature
       - entity: sensor.memory_use_percent
       - entity: sensor.processor_use

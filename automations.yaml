@@ -153,22 +153,25 @@
   initial_state: 'on'
   trigger:
     platform: state
-    entity_id: device_tracker.srp_iphone
+    entity_id: device_tracker.scott_s_iphone
   action:
     - service: mqtt.publish
       data_template:
         topic: 'location/phone/srp_iphone_ios'
         retain: false
-        payload: '
-                    {"battery":{{ states.device_tracker.srp_iphone.attributes.battery }},
-                    "longitude":{{ states.device_tracker.srp_iphone.attributes.longitude }},
-                    "gps_accuracy":{{ states.device_tracker.srp_iphone.attributes.gps_accuracy }},
-                    "latitude":{{ states.device_tracker.srp_iphone.attributes.latitude }},
+        payload:
+                '
+                    {"battery_level":{{ states.device_tracker.scott_s_iphone.attributes.battery_level }},
+                    "longitude":{{ states.device_tracker.scott_s_iphone.attributes.longitude }},
+                    "gps_accuracy":{{ states.device_tracker.scott_s_iphone.attributes.gps_accuracy }},
+                    "latitude":{{ states.device_tracker.scott_s_iphone.attributes.latitude }},
                     "tst": {{ as_timestamp(now()) | int }},
-                    "altitude":{{ states.device_tracker.srp_iphone.attributes.altitude }},
                     "_type":"location",
                     "tid":"sc"}
-                 '
+                '
+    # - service: notify.telegram_tworoads
+    #   data:
+    #     message: "Send location..."
 
 # Start actions
 - id: 'startactions'

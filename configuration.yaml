@@ -105,6 +105,32 @@ sensor:
     value_template: '{{ value_json.rssi }}'
     unit_of_measurement: 'dBm'
     name: 'Rav4'
+  - platform: mqtt
+    state_topic: 'environment/tworoads_den/bme280-temperature'
+    unit_of_measurement: '°F'
+    name: 'Den Temperature'
+  - platform: mqtt
+    state_topic: 'environment/tworoads_den/bme280-humidity'
+    unit_of_measurement: '% RH'
+    name: 'Den Humidity'    
+  - platform: mqtt
+    state_topic: 'environment/tworoads_den/bme280-pressure'
+    unit_of_measurement: 'hPa'
+    name: 'Den Pressure'
+  - platform: mqtt
+    state_topic: 'environment/tworoads_den/bme280-sealevel-pressure'
+    unit_of_measurement: 'hPa'
+    name: 'Den Sealevel Pressure'
+  - platform: mqtt
+    name: 'Tasmota1 State'
+    state_topic: tele/tasmota1/STATE
+    value_template: '{{ value_json["Wifi"]["RSSI"] }}'
+    json_attributes:
+      - Time
+      - Uptime
+      - LoadAvg
+      - POWER
+      - Wifi
   # Weewx Weather
   - platform: rest
     resource: http://192.168.37.157/weewx/daily.json
@@ -129,6 +155,31 @@ sensor:
       - input.voltage
       - battery.runtime
       - ups.status.display
+  - platform: rest
+    name: "House Energy Data"
+    resource: "http://192.168.37.155:3480/data_request?id=variableget&DeviceNum=105%serviceId=urn:micasaverde-com:serviceId:EnergyMetering1&Variable=states"
+    method: "GET"
+    scan_interval: 60
+    json_attributes:
+      energy_delivered: '{{ value_json[21].value }}'
+      power_demand: '{{ value_json[23].value }}'
+      # - '{{ value_json[23] }}'
+ #   value_template: '{{ { "energy_delivered": value_json[21].value, "power_demand": value_json[23].value } }}'
+    value_template: '{{ "active" }}'
+  - platform: rest
+    name: "House Energy Delivered"
+    resource: "http://192.168.37.155:3480/data_request?id=variableget&DeviceNum=105%serviceId=urn:micasaverde-com:serviceId:EnergyMetering1&Variable=states"
+    method: "GET"
+    scan_interval: 60
+    unit_of_measurement: kWh
+    value_template: '{{ value_json[21].value }}'
+  - platform: rest
+    name: "House Power Demand"
+    resource: "http://192.168.37.155:3480/data_request?id=variableget&DeviceNum=105%serviceId=urn:micasaverde-com:serviceId:EnergyMetering1&Variable=states"
+    method: "GET"
+    scan_interval: 60
+    unit_of_measurement: kW
+    value_template: '{{ (value_json[23].value | float) / 1000 | round(2) }}'
   # Local System monitor
   - platform: systemmonitor
     resources:
@@ -139,66 +190,52 @@ sensor:
   # Template      
   - platform: template
     sensors:
+    #   house_energy_delivered:
+    #     friendly_name: "House Energy Delivered"
+    #     value_template: "{{ states.sensor.house_energy_data.energy_delivered }}"
+    #     unit_of_measurement: "kWh"
+    #   house_power_demand:
+    #     friendly_name: "House Power Demand"
+    #     value_template: "{{ (states.sensor.house_energy_data.power_demand | float) / 1000 | round(2) }}"
+    #     unit_of_measurement: "kW"
       basement_ups_battery_minutes:
         friendly_name: "Basement UPS Battery Minutes"
-        entity_id:
-          - sensor.basement_ups_battery_runtime
         value_template: "{{ ((states('sensor.basement_ups_battery_runtime')) | float / 60) | round(0) }}"
         unit_of_measurement: "min"
-      load_1m_templated:
-        friendly_name: "CPU Load (1m)"
-        icon_template: mdi:memory
-        value_template: "{{ states('sensor.load_1m') | float | round(2) }}"
       weewx_outside_temperature:
         friendly_name: Outside Temperature
-        entity_id:
-          - sensor.weewx_weather
         value_template: "{{ states.sensor.weewx_weather.attributes.current['outTemp'] }}"
         unit_of_measurement: '°F'
       weewx_inside_temperature:
         friendly_name: Inside Temperature
-        entity_id:
-          - sensor.weewx_weather
         value_template: "{{ states.sensor.weewx_weather.attributes.current['insideTemp'] }}"
         unit_of_measurement: '°F'
       weewx_outside_humidity:
         friendly_name: Outside Humidity
-        entity_id:
-          - sensor.weewx_weather
         icon_template: mdi:water-percent
         value_template: "{{ states.sensor.weewx_weather.attributes.current['humidity'] }}"
         unit_of_measurement: '%'
       weewx_inside_humidity:
         friendly_name: Inside Humidity
-        entity_id:
-          - sensor.weewx_weather
         icon_template: mdi:water-percent
         value_template: "{{ states.sensor.weewx_weather.attributes.current['insideHumidity'] }}"
         unit_of_measurement: '%'
       weewx_wind_speed:
         friendly_name: Wind Speed
-        entity_id:
-          - sensor.weewx_weather
         icon_template: mdi:weather-windy 
         value_template: "{{ states.sensor.weewx_weather.attributes.current['windSpeed'] }}"
         unit_of_measurement: 'mph'
       weewx_wind_direction_ordinal:
         friendly_name: Wind Direction
-        entity_id:
-          - sensor.weewx_weather
         icon_template: mdi:weather-windy
         value_template: "{{ states.sensor.weewx_weather.attributes.current['windDirText'] }}"
       weewx_solar_altitude:
         friendly_name: Solar Altitude
-        entity_id:
-          - sensor.weewx_weather
         value_template: "{{ states.sensor.weewx_weather.attributes.almanac.sun['altitude'] }}"
         unit_of_measurement: '°'
       # http://www.csgnetwork.com/barcorrecthcalc.html - +11.1 for 300ft/100m
       ambient_adjusted_pressure:
         friendly_name: Ambient Adjusted Pressure
-        entity_id:
-          - sensor.ambient_pressure
         icon_template: mdi:gauge
         value_template: "{{ ((states('sensor.ambient_pressure')) | float + 11.1) | round(1) }}"
         unit_of_measurement: 'mb'
@@ -242,7 +279,26 @@ switch:
         command_off: !secret tworoads_pihole_disable
         command_state: !secret tworoads_pihole_status
         value_template: "{{ value_json.status == 'enabled' }}"
-        
+  - platform: mqtt
+    name: "Tasmon1"
+    state_topic: "stat/tasmota1/POWER"
+    command_topic: "cmnd/tasmota1/POWER"
+    availability_topic: "tele/tasmota1/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+
+utility_meter:
+  daily_energy:
+    source: sensor.house_energy_delivered
+    cycle: daily
+  monthly_energy:
+    source: sensor.house_energy_delivered
+    cycle: monthly
+
 weather:
 # Darksky
   - platform: darksky
@@ -267,6 +323,23 @@ tts:
 
 lovelace:
   mode: yaml
+  resources:
+    - url: /hacsfiles/bignumber-card/bignumber-card.js?v=0.0.2
+      type: module
+    - url: /hacsfiles/custom-header/custom-header.js?v=0.0.2
+      type: module
+    - url: /hacsfiles/lovelace-card-tools/card-tools.js
+      type: module
+    - url: /hacsfiles/secondaryinfo-entity-row/secondaryinfo-entity-row.js?=0.0.2
+      type: module
+    - url: /hacsfiles/flex-horseshoe-card/flex-horseshoe-card.js?v=0.0.2
+      type: module
+    - url: /hacsfiles/simple-thermostat/simple-thermostat.js?v=0.0.
+      type: module
+    - url: /hacsfiles/button-card/button-card.js?v=0.0.2
+      type: module
+    - url: /local/vertical-style-card.js?v=0.1
+      type: js
 
 history: !include history.yaml
 recorder: !include recorder.yaml
