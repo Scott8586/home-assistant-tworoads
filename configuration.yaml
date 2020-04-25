@@ -125,12 +125,7 @@ sensor:
     name: 'Tasmota1 State'
     state_topic: tele/tasmota1/STATE
     value_template: '{{ value_json["Wifi"]["RSSI"] }}'
-    json_attributes:
-      - Time
-      - Uptime
-      - LoadAvg
-      - POWER
-      - Wifi
+    json_attributes_topic: 'tele/tasmota1/STATE'
   # Weewx Weather
   - platform: rest
     resource: http://192.168.37.157/weewx/daily.json
