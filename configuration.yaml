@@ -286,6 +286,7 @@ switch:
     payload_not_available: "Offline"
     retain: false
 
+
 utility_meter:
   daily_energy:
     source: sensor.house_energy_delivered
@@ -294,6 +295,9 @@ utility_meter:
     source: sensor.house_energy_delivered
     cycle: monthly
 
+iqvia:
+  zip_code: "98407"
+  
 weather:
 # Darksky
   - platform: darksky
@@ -323,18 +327,20 @@ lovelace:
       type: module
     - url: /hacsfiles/custom-header/custom-header.js?v=0.0.2
       type: module
-    - url: /hacsfiles/lovelace-card-tools/card-tools.js
+    - url: /hacsfiles/lovelace-card-tools/card-tools.js?v=0.0.2
       type: module
     - url: /hacsfiles/secondaryinfo-entity-row/secondaryinfo-entity-row.js?=0.0.2
       type: module
     - url: /hacsfiles/flex-horseshoe-card/flex-horseshoe-card.js?v=0.0.2
       type: module
-    - url: /hacsfiles/simple-thermostat/simple-thermostat.js?v=0.0.
+    - url: /hacsfiles/simple-thermostat/simple-thermostat.js?v=0.0.2
       type: module
     - url: /hacsfiles/button-card/button-card.js?v=0.0.2
       type: module
-    - url: /local/vertical-style-card.js?v=0.1
+    - url: /local/vertical-style-card.js?v=0.0.2
       type: js
+    - url: /hacsfiles/entity-attributes-card/entity-attributes-card.js?v=0.0.2
+      type: module
 
 history: !include history.yaml
 recorder: !include recorder.yaml

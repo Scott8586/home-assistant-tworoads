@@ -841,6 +841,8 @@ class FlexHorseshoeCard extends LitElement {
 	*/
 
   setConfig(config) {
+
+	config = JSON.parse(JSON.stringify(config))
 		
     if (!config.entities) {
       throw Error('No entities defined');

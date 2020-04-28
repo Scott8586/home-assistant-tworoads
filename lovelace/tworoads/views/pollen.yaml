@@ -1,0 +1,150 @@
+title: Allergy
+id: allergy
+icon: mdi:flower
+panel: true
+cards:
+  - type: vertical-stack
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: vertical-stack
+            cards:
+              - type: markdown
+                content: "## Allergens Today"
+              - type: gauge
+                entity: sensor.allergy_index_today
+                title: Today
+                min: 0
+                max: 12
+                unit_of_measurement: " "
+                severity:
+                  green: 0.0
+                  yellow: 4.8
+                  red: 9.7
+              - type: custom:entity-attributes-card
+                filter:
+                  include:
+                    - key: sensor.allergy_index_today.rating
+                      name: Rating
+                    - key: sensor.allergy_index_today.allergen_name_1
+                      name: Allergen One
+                    - key: sensor.allergy_index_today.allergen_name_2
+                      name: Allergen Two
+                    - key: sensor.allergy_index_today.allergen_name_3
+                      name: Allergen Three
+          - type: vertical-stack
+            cards:
+              - type: markdown
+                content: "## Allergens Tomorrow"
+              - type: gauge
+                entity: sensor.allergy_index_tomorrow
+                title: Tomorrow
+                min: 0
+                max: 12
+                unit_of_measurement: " "
+                severity:
+                  green: 0.0
+                  yellow: 4.8
+                  red: 9.7
+              - type: custom:entity-attributes-card
+                filter:
+                  include:
+                    - key: sensor.allergy_index_tomorrow.rating
+                      name: Rating
+                    - key: sensor.allergy_index_tomorrow.allergen_name_1
+                      name: Allergen One
+                    - key: sensor.allergy_index_tomorrow.allergen_name_2
+                      name: Allergen Two
+                    - key: sensor.allergy_index_tomorrow.allergen_name_3
+                      name: Allergen Three
+          - type: vertical-stack
+            cards:
+              - type: markdown
+                content: "## Allergen Forecast"
+              - type: gauge
+                entity: sensor.allergy_index_forecasted_average
+                title: Forecasted
+                min: 0
+                max: 12
+                unit_of_measurement: " "
+                severity:
+                  green: 0.0
+                  yellow: 4.8
+                  red: 9.7
+              - type: custom:entity-attributes-card
+                filter:
+                  include:
+                    - key: sensor.allergy_index_forecasted_average.rating
+                      name: Rating
+                    - key: sensor.allergy_index_forecasted_average.trend
+                      name: Trend
+                    - key: sensor.allergy_index_forecasted_average.season
+                      name: Season
+                    - key: sensor.allergy_index_forecasted_average.outlook
+                      name: Outlook
+      - type: horizontal-stack
+        cards:
+          - type: vertical-stack
+            cards:
+              - type: markdown
+                content: "## Asthma Today"
+              - type: gauge
+                entity: sensor.asthma_index_today
+                title: Yesterday
+                min: 0
+                max: 12
+                unit_of_measurement: " "
+                severity:
+                  green: 0.0
+                  yellow: 4.8
+                  red: 9.7
+              - type: custom:entity-attributes-card
+                filter:
+                  include:
+                    - key: sensor.asthma_index_today.rating
+                      name: Rating
+                    - key: sensor.asthma_index_today.allergen_name_1
+                      name: Irritant
+                    - key: sensor.asthma_index_today.allergen_amount_1
+                      name: Level
+
+          - type: vertical-stack
+            cards:
+              - type: markdown
+                content: "## Asthma Tomorrow"
+              - type: gauge
+                entity: sensor.asthma_index_tomorrow
+                title: Today
+                min: 0
+                max: 12
+                unit_of_measurement: " "
+                severity:
+                  green: 0.0
+                  yellow: 4.8
+                  red: 9.7
+              - type: custom:entity-attributes-card
+                filter:
+                  include:
+                    - key: sensor.asthma_index_tomorrow.rating
+                      name: Rating
+
+          - type: vertical-stack
+            cards:
+              - type: markdown
+                content: "## Asthma Forecast"
+              - type: gauge
+                entity: sensor.asthma_index_forecasted_average
+                title: Tomorrow
+                min: 0
+                max: 12
+                unit_of_measurement: " "
+                severity:
+                  green: 0.0
+                  yellow: 4.8
+                  red: 9.7
+              - type: custom:entity-attributes-card
+                filter:
+                  include:
+                    - key: sensor.asthma_index_forecasted_average.rating
+                      name: Rating
+
