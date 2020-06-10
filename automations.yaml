@@ -35,8 +35,8 @@
 
 # zone change
 - id: 'zonechange'
-  alias: 'name entered zone'
-  initial_state: 'off'
+  alias: 'enter named zone'
+  initial_state: 'on'
   trigger:
     platform: state
     entity_id: device_tracker.scotts_iphone, device_tracker.stephs_iphone, device_tracker.stephs_apple_watch, device_tracker.scotts_iphone_bt, device_tracker.stephs_iphone_bt, device_tracker.scotts_g645_bt, device_tracker.stephs_apwa_bt, device_tracker.explorer_bt, device_tracker.audi_bt, device_tracker.rav4_bt
@@ -48,8 +48,8 @@
 
 # zone change
 - id: 'awaychange'
-  alias: name leaving zone
-  initial_state: 'off'
+  alias: leave named zone
+  initial_state: 'on'
   trigger:
     platform: state
     entity_id: device_tracker.scotts_iphone, device_tracker.stephs_iphone, device_tracker.stephs_apple_watch, device_tracker.scotts_iphone_bt, device_tracker.stephs_iphone_bt, device_tracker.scotts_g645_bt, device_tracker.stephs_apwa_bt, device_tracker.explorer_bt, device_tracker.audi_bt, device_tracker.rav4_bt
@@ -59,83 +59,45 @@
     data_template:
       message: "z: {{ trigger.to_state.name }} appears Away"
 
-# Scott Home sensor:
-- id: 'scotthomesensor'
-  alias: Scott Home Presense
+# Home sensor:
+- id: 'homesensor'
+  alias: Home Presense
   initial_state: 'on'
   trigger:
     platform: state
-    entity_id: binary_sensor.scott_presence
-    from: 'off'
-  action:
-    service: notify.telegram_tworoads
-    data_template:
-      message: "{{ trigger.to_state.name }} is Home"
-
-# Scott Away sensor:
-- id: 'scottawaysensor'
-  alias: Scott Away Presense
-  trigger:
-    platform: state
-    entity_id: binary_sensor.scott_presence
-    to: 'off'
-  action:
-    service: notify.telegram_tworoads
-    data_template:
-      message: "{{ trigger.to_state.name }} is Away"
-
-# Scott Person State:
-- id: 'scottpersonstate'
-  alias: Scott Person State
-  initial_state: 'on'
-  trigger:
-    platform: state
-    entity_id: person.scott
-    from: 'not_home'
-  action:
-    service: notify.telegram_tworoads
-    data_template:
-      message: "{{ trigger.to_state.name }} to {{ trigger.to_state.state }}"
-
-# Stephanie Home sensor:
-- id: 'stephaniehomesensor'
-  alias: Stephanie Home Presense
-  initial_state: 'off'
-  trigger:
-    platform: state
-    entity_id: binary_sensor.steph_presence
+    entity_id: binary_sensor.scott_presence, binary_sensor.steph_presence
     from: 'off'
   action:
     service: notify.telegram_tworoads
     data_template:
       message: "B: {{ trigger.to_state.name }} is Home"
 
-# Stephanie Away sensor:
-- id: 'stephanieawaysensor'
-  alias: Stephanie Away Presense
-  initial_state: 'off'
+# Away sensor:
+- id: 'awaysensor'
+  alias: Away Presense
   trigger:
     platform: state
-    entity_id: binary_sensor.steph_presence
+    entity_id: binary_sensor.scott_presence, binary_sensor.steph_presence
     to: 'off'
   action:
     service: notify.telegram_tworoads
     data_template:
       message: "B: {{ trigger.to_state.name }} is Away"
 
-# Stephanie Person State:
-- id: 'stephaniepersonstate'
-  alias: Stephanie Person State
+# Person State:
+- id: 'personstate'
+  alias: Scott Person State
   initial_state: 'on'
   trigger:
     platform: state
-    entity_id: person.stephanie
+    entity_id: person.scott, person.stephanie
     from: 'not_home'
   action:
     service: notify.telegram_tworoads
     data_template:
-      message: "{{ trigger.to_state.name }} to {{ trigger.to_state.state }}"
+      message: "P: {{ trigger.to_state.name }} is {{ trigger.to_state.state }}"
 
+# Binary Both Home
 - id: 'bothathome'
   alias: Both Home
   initial_state: 'on'
