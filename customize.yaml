@@ -4,43 +4,13 @@ person.stephanie:
   entity_picture: https://www.gravatar.com/avatar/608e3038b8dd7098729f71371af81d14.jpg?s=80&d=wavatar
 sensor.memory_use_percent:
   friendly_name: Memory use
-#sensor.load_1m:
-# hidden: true
-#sensor.basement_ups_battery_runtime:
-# hidden: true
-#sensor.ambient_humidity:
-#  icon: mdi:water-percent
-#sensor.ambient_pressure:
-#  icon: mdi:gauge
 sensor.raspi_den_tr_cpu_temperature:
   friendly_name: "Den raspi8 CPU Temp"
+sensor.raspi_garage_tr_cpu_temperature:
+  friendly_name: "Gararge raspi10 CPU Temp"
 weather.dark_sky:
   friendly_name: 'Dark Sky: Tacoma'
 zone.home:
   friendly_name: Tworoads
   icon: mdi:account-multiple
-device_tracker.scotts_iphone_bt:
-  hidden: true
-  source_type: bluetooth
-device_tracker.stephs_iphone_bt:
-  hidden: true
-  source_type: bluetooth
-device_tracker.stephs_ipad_bt:
-  hidden: true
-  source_type: bluetooth
-device_tracker.scotts_ipad_bt:
-  hidden: true
-  source_type: bluetooth
-device_tracker.srp_iphone:
-  hidden: true
-device_tracker.scotts_g645_bt:
-  hidden: true
-  source_type: bluetooth
-device_tracker.stephs_apwa_bt:
-  hidden: true
-  source_type: bluetooth
-device_tracker.nancys_ipad:
-  hidden: true
-device_tracker.scotts_iphone:
-  entity_picture: https://www.gravatar.com/avatar/7ef327c7d17eb7c2466bbd613db99884.jpg?s=80&d=wavatar
 
