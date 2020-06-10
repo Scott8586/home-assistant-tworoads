@@ -14,10 +14,10 @@ cards:
     title: Local Machine
     type: entities
   - entities:
-      - sensor.basement_ups_status
-      - sensor.basement_ups_load
-      - sensor.basement_ups_input_voltage
-      - sensor.basement_ups_battery_minutes
+      - sensor.ups_status
+      - sensor.ups_load
+      - sensor.ups_input_voltage
+      - sensor.ups_battery_minutes
     title: Network Operations
     type: entities
   - type: entities
@@ -30,6 +30,7 @@ cards:
     type: entities
     entities:
       - entity: sensor.raspi_den_tr_cpu_temperature
+      - entity: sensor.raspi_garage_tr_cpu_temperature
   - title: Host Control
     show_name: true
     show_state: true

@@ -12,6 +12,7 @@ homeassistant:
   time_zone: America/Los_Angeles
   # Customization file
   customize: !include customize.yaml
+  customize_glob: !include customize_glob.yaml
 
 # Configure a default setup of Home Assistant (frontend, api, etc)
 default_config:
@@ -45,9 +46,12 @@ notify:
 
 device_tracker:
   - platform: mqtt
+    source_type: bluetooth
     devices:
       scotts_iphone_bt: 'monitor/tworoads_den/scotts_iphone_bt/device_tracker'
       stephs_iphone_bt: 'monitor/tworoads_den/stephs_iphone_bt/device_tracker'
+      scotts_ipad_bt: 'monitor/tworoads_den/scotts_ipad_bt/device_tracker'
+      stephs_ipad_bt: 'monitor/tworoads_den/stephs_ipad_bt/device_tracker'
       stephs_apwa_bt: 'monitor/tworoads_den/stephs_apwa_bt/device_tracker'
       scotts_g645_bt: 'monitor/tworoads_den/scotts_g645_bt/device_tracker'
       audi_bt: 'monitor/tworoads_garage/audi/device_tracker'
@@ -193,9 +197,10 @@ sensor:
     #     friendly_name: "House Power Demand"
     #     value_template: "{{ (states.sensor.house_energy_data.power_demand | float) / 1000 | round(2) }}"
     #     unit_of_measurement: "kW"
-      basement_ups_battery_minutes:
+      ups_battery_minutes:
         friendly_name: "Basement UPS Battery Minutes"
-        value_template: "{{ ((states('sensor.basement_ups_battery_runtime')) | float / 60) | round(0) }}"
+        icon_template: mdi:timer
+        value_template: "{{ ((states('sensor.ups_battery_runtime')) | float / 60) | round(0) }}"
         unit_of_measurement: "min"
       weewx_outside_temperature:
         friendly_name: Outside Temperature
@@ -242,8 +247,8 @@ sensor:
   - platform: command_line
     name: CPU Temperature
     command: "cat /sys/class/thermal/thermal_zone0/temp"
-    value_template: "{{ value | multiply(0.001) | float | round(1) }} °C"
-#    unit_of_measurement: "°F"
+    value_template: "{{ value | multiply(0.001) | float | round(1) }}"
+    unit_of_measurement: " °C"
 #    value_template: "{{ (value | multiply(0.0018) + 32) | float | round(2) }} °F"
   - platform: statistics
     name: tworoads_pi_hole_dns_queries_today_statistics
@@ -262,7 +267,15 @@ sensor:
     host: 192.168.37.162
     baseoid: .1.3.6.1.2.1.25.1.8.1
     name: raspi_den_tr_cpu_temperature
-    value_template: '{{ value }} °C'
+    value_template: "{{ value }}"
+    unit_of_measurement: " °C"
+  - platform: snmp
+    host: 192.168.37.162
+    baseoid: .1.3.6.1.2.1.25.1.8.1
+    name: raspi_garage_tr_cpu_temperature
+    value_template: "{{ value }}"
+    unit_of_measurement: " °C"
+
 # Add the moon
   - platform: moon
 
