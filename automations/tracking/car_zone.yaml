@@ -1,0 +1,11 @@
+# car zone
+id: 'carzone'
+alias: 'Z: Car Zone Change'
+trigger:
+  platform: state
+  entity_id: device_tracker.audi_q7_bt, device_tracker.audi_q7_position, device_tracker.audi_a6_bt, device_tracker.rav4_bt
+action:
+  service: !secret telegram_notify
+  data_template:
+    message: "C: {{ trigger.to_state.name }} appears {{ trigger.to_state.state }}"
+

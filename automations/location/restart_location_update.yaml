@@ -1,0 +1,11 @@
+id: 'restartlocationupdate'
+alias: 'L: Request Location Update'
+trigger:                     
+  event: start                                                                    
+  platform: homeassistant
+condition: []                             
+action:                            
+  service: notify.mobile_app_scott_s_iphone 
+  data:                                                                      
+    message: "request_location_update"      
+

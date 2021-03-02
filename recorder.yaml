@@ -1,12 +1,13 @@
-purge_interval: 1
 purge_keep_days: 30
 exclude:
   domains:
-  - automation
   - weblink
   - updater
   - media_player
   entities:
-  - sun.sun # Don't record sun data
+  - sensor.moon
+  - sun.sun
   - sensor.last_boot # Comes from 'systemmonitor' sensor platform
-  - sensor.date
+  - sensor.time
+  - sensor.erx_wan_in
+  - sensor.erx_wan_out

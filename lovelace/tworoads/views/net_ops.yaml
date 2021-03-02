@@ -2,48 +2,195 @@
 icon: mdi:lan
 path: net-ops
 theme: default
-badges:
-  - entity: binary_sensor.updater
+#badges:
+#  - entity: binary_sensor.updater
 cards:
+  - cards:
+      - type: sensor
+        entity: sensor.internet_in_mbps
+        name: WAN In
+        unit: Mbps
+        graph: none
+      - type: sensor
+        entity: sensor.internet_out_mbps
+        name: WAN Out
+        unit: Mbps
+        graph: none
+    type: horizontal-stack
+    title: Internet
+#   - cards:
+#     - color_thresholds:
+#       - color: '#e45e65'
+#         value: 20
+#       - color: '#e0b400'
+#         value: 10
+#       - color: '#0da035'
+#         value: -1
+#       color_thresholds_transition: hard
+#       entities:
+#         - sensor.internet_in_mbps
+#       group: false
+#       hour24: true
+#       line_width: 5
+#       points_per_hour: 1
+#       align_icon: left
+#       align_header: left
+#       show:
+#         extrema: false
+#         average: false
+#         fill: fade
+#         icon: true
+#         labels: false
+#         name: true
+#         state: true
+#       style: |
+#         ha-card {
+#           border: solid 2px var(--primary-color);
+#         }
+#       type: 'custom:mini-graph-card'
+#     - color_thresholds:
+#       - color: '#e45e65'
+#         value: 2
+#       - color: '#e0b400'
+#         value: 1
+#       - color: '#0da035'
+#         value: -1
+#       color_thresholds_transition: hard
+#       entities:
+#         - sensor.internet_out_mbps
+#       group: false
+#       hour24: true
+#       line_width: 5
+#       points_per_hour: 1
+#       align_icon: left
+#       align_header: left
+#       show:
+#         extrema: false
+#         average: false
+#         icon: true
+#         labels: false
+#         name: true
+#         state: true
+#       style: |
+#         ha-card {
+#           border: solid 2px var(--primary-color);
+#         }
+#       type: 'custom:mini-graph-card'
+#     type: 'custom:vertical-style-card'
+#     title: Internet
+#     style:
+#       font_size: 24px
+#       border: true
+  - cards:
+    - title: Local Machine
+      type: entities
+      entities:
+        - type: custom:multiple-entity-row                         
+          entity: sensor.installed_version                         
+          name: HA Installed Version                               
+          icon: mdi:home-assistant                                 
+          state_header: Current                                    
+          entities:                                                
+            - entity: sensor.latest_available_version              
+              name: Latest                           
+          style: |                                   
+            :host {                                               
+              {% if states(config.entity).split('.')[1] != states('sensor.latest_available_version').split('.')[1] %}
+                color: rgb(255, 165, 0);                                                                             
+                --paper-item-icon-color: rgb(255, 165, 0);                                                           
+              {% endif %};                                                                                           
+            }                                                                                                        
+        - entity: sensor.hacs                                                                                        
+          name: HACS                                                                                                 
+          tap_action:                                                                                                
+            action: navigate                                                                                         
+            navigation_path: /hacs/installed                                                                         
+          style: |                                                                                                   
+            :host {                                       
+              {% if states(config.entity) != '0' %}       
+                color: rgb(255, 165, 0);                                
+                --paper-item-icon-color: rgb(255, 165, 0);
+              {% endif %};                                
+            }                                                                                
+        - entity: sensor.home_assistant_v2_db                
+          icon: mdi:database                              
+        - type: custom:bar-card           
+          columns: 2                      
+          entities:                 
+            - entity: sensor.processor_use
+              name: CPU        
+              icon: mdi:chip
+            - entity: sensor.load_1m                 
+              name: Load  
+              icon: mdi:chip
+            - entity: sensor.memory_use_percent
+              name: RAM                                                                                              
+              icon: mdi:memory          
+            - entity: sensor.swap_use_percent             
+              name: Swap  
+              icon: mdi:memory
+            - entity: sensor.cpu_temperature
+              name: Temp
+              icon: mdi:thermometer
+            - entity: sensor.disk_use_percent
+              name: Disk                    
+              icon: mdi:harddisk
+          severity:                                                                                                  
+            - from: 0                                                                                                
+              to: 60                                                                                                 
+              color: green                                                                                           
+            - from: 61                                                                                               
+              to: 80                                                                                                 
+              color: orange                                                                                          
+            - from: 81                                           
+              to: 100                                     
+              color: red                                                
+          positions:                                               
+            indicator: 'off'                                       
+          style: |-                                                                          
+            bar-card-title {                                      
+              text-shadow: 1px 1px 5px black;                     
+            }                                                     
+            bar-card-value {                                     
+              text-shadow: 1px 1px 5px black;                    
+            }                                                    
+    type: 'custom:vertical-style-card'
+    style:
+      font_size: 24px
+      border: true
+  - title: Remote Machines
+    type: entities
+    entities:
+      - entity: sensor.tworoads_gps
+        tap_action:
+          action: url
+          url_path: http://hub.tworoads.net/gpsd.php?host=192.168.37.157
+      - entity: sensor.raspi_den_tr_cpu_temperature
+      - entity: sensor.raspi_garage_tr_cpu_temperature
   - entities:
-      - entity: sensor.load_1m
-      - entity: sensor.cpu_temperature
-      - entity: sensor.memory_use_percent
-      - entity: sensor.processor_use
-      - entity: sensor.last_boot
-    title: Local Machine
+      - binary_sensor.dirt_security_status
+      - sensor.dirt_cpu_load_total
+      - sensor.dirt_memory_usage_real
+      - sensor.dirt_drive_1_status
+      - sensor.dirt_drive_1_temperature
+      - binary_sensor.dirt_drive_1_exceeded_max_bad_sectors
+      - sensor.dirt_drive_2_status                                        
+      - sensor.dirt_drive_2_temperature                                   
+      - binary_sensor.dirt_drive_2_exceeded_max_bad_sectors
+    title: Synology NAS (dirt)
     type: entities
   - entities:
       - sensor.ups_status
       - sensor.ups_load
       - sensor.ups_input_voltage
       - sensor.ups_battery_minutes
-    title: Network Operations
+    title: Basement UPS
     type: entities
-  - type: entities
-    entities:
-      - automation.ios_test_command
-      - automation.telegram_test_command
-      - automation.sunset_message
-    title: Test Messages
-  - title: Remote Machines
-    type: entities
-    entities:
-      - entity: sensor.raspi_den_tr_cpu_temperature
-      - entity: sensor.raspi_garage_tr_cpu_temperature
   - title: Host Control
     show_name: true
     show_state: true
     type: glance
     entities:
-      - entity: sensor.uptime
-        name: Lovelace UI
-        icon: 'mdi:restart'
-        tap_action:
-          action: call-service
-          service: automation.trigger
-          service_data:
-            entity_id: automation.home_assistant_reload_command
       - entity: sensor.uptime
         icon: 'mdi:restart'
         name: Home Assistant
@@ -72,4 +219,12 @@ cards:
         - entity: sensor.tworoads_pi_hole_dns_queries_today
           name: Number of DNS requests today
           type: "custom:secondaryinfo-entity-row"
-          secondary_info: "[[ sensor.tworoads_dns_query_rate ]] queries per min"
+#  - type: entities                                                                                                                                                                                                    
+#    show_header_toggle: false                                                                                                                                                                                         
+#    entities:                                                                                                                                                                                                         
+#      - type: custom:secondaryinfo-entity-row                                                                                                                                                                         
+#        entity: sensor.system_uptime                                                                                                                                                                                  
+#        secondary_info: "Since: [[ sensor.last_boot_date_time ]]"                                                                                                                                                     
+#        icon: mdi:desktop-classic                                                                                                                                                                                     
+#      - entity: sensor.uptime                                                                                                                                                                                         
+#        icon: mdi:home-assistant                                                                                                                                                                                      

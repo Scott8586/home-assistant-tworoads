@@ -1,0 +1,12 @@
+# Test message      
+id: 'testmessage'
+alias: "N: Telegram Test"
+trigger:
+  platform: event
+  event_type: telegram_command
+  event_data:
+    command: '/ping'
+action:
+  service: !secret telegram_notify
+  data:
+    message: "pong"

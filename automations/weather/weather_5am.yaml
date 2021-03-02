@@ -1,0 +1,9 @@
+# Daily weather report
+id: 'dailyweatherreport'
+alias: 'N: Daily Weather Report'
+trigger:
+  platform: time
+  at: '05:30:00'
+action:
+  service: automation.trigger
+  entity_id: automation.weather_report

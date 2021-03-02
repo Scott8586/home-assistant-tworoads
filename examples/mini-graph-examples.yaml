@@ -1,0 +1,30 @@
+animate: true
+color_thresholds:
+  - color: '#3498db'
+    value: 15
+  - color: '#f39c12'
+    value: 20
+  - color: '#c0392b'
+    value: 30
+entities:
+  - entity: sensor.shelly_shht_1_f931d6_temperature
+    index: 0
+    name: Balkon
+    show_state: true
+    state_adaptive_color: true
+  - entity: sensor.solar_elevation
+    color: '#444444'
+    show_fill: false
+    show_legend: false
+    show_state: false
+    y_axis: secondary
+lower_bound_secondary: 0
+hours_to_show: 24
+name: Temperatur
+hour24: true
+line_width: 2
+show:
+  points: false
+  extrema: true
+points_per_hour: 12
+type: 'custom:mini-graph-card'

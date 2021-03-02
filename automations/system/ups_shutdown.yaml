@@ -1,0 +1,13 @@
+# UPS Shutdown                                                                                           
+id: 'upsshutdown'
+alias: "S: UPS Based Shutdown"                                                                                                        
+initial_state: 'off'                                                                                
+trigger:                                                                                            
+  platform: numeric_state                                                                              
+  entity_id: sensor.ups_battery_runtime                                                                                            
+  below: 600                                                                                     
+action:                                                                                             
+  - service: !secret telegram_notify
+    data:                                                                     
+      message: "Home Assistant UPS shutdown"                                      
+  - service: hassio.host_shutdown                                             

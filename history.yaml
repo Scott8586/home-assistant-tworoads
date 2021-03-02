@@ -1,4 +1,3 @@
-
 use_include_order: true
 include:
   entities:
@@ -9,4 +8,5 @@ include:
     - sensor.weewx_outside_temperature
     - sensor.weewx_inside_temperature
     - sensor.processor_use
+    - sensor.load_1m
     - sensor.memory_use_percent

@@ -1,0 +1,15 @@
+# zone change
+id: 'awaychange' 
+alias: 'Z: Leave Named Zone'
+initial_state: 'off'                                                                                                               
+trigger:                                                                                         
+  platform: state 
+  entity_id: >   
+    device_tracker.scotts_iphone, device_tracker.stephs_iphone, device_tracker.stephs_apple_watch, device_tracker.scotts_iphone_bt,
+    device_tracker.stephs_iphone_bt, device_tracker.scotts_g645_bt, device_tracker.stephs_apwa_bt                                  
+  to: 'not_home'                                                                                 
+action:         
+  service: !secret telegram_notify
+  data_template:                   
+    message: "Z: {{ trigger.to_state.name }} appears Away"
+

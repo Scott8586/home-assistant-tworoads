@@ -5,20 +5,27 @@ homeassistant:
   latitude: !secret tworoads_latitude
   longitude: !secret tworoads_longitude
   # Impacts weather/sunrise data (altitude above sea level in meters)
-  elevation: 100
+  # 295 ft/ 90m
+  elevation: 90
   # metric for Metric, imperial for Imperial
   unit_system: imperial
   # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
   time_zone: America/Los_Angeles
+  # URLS:
+#  internal_url: "https://homeassistant.local:8123"
+  internal_url: "https://homeassistant.local:8123"
+  external_url: "https://hass.tworoads.net:8123"
   # Customization file
   customize: !include customize.yaml
   customize_glob: !include customize_glob.yaml
+  allowlist_external_dirs:                                                                      
+    - /config                                                                                   
 
 # Configure a default setup of Home Assistant (frontend, api, etc)
 default_config:
 
-# iOS setup
-ios:
+# Mobile App
+mobile_app:
 
 # Discover some devices automatically
 discovery:
@@ -44,6 +51,16 @@ notify:
     api_key: !secret telegram_apikey
     chat_id: !secret telegram_chatid
 
+mqtt:
+  discovery: true
+  discovery_prefix: homeassistant
+
+climate:
+  - platform: venstar
+    host: !secret venstar_host1
+    ssl: false
+    humidifier: false
+
 device_tracker:
   - platform: mqtt
     source_type: bluetooth
@@ -54,22 +71,19 @@ device_tracker:
       stephs_ipad_bt: 'monitor/tworoads_den/stephs_ipad_bt/device_tracker'
       stephs_apwa_bt: 'monitor/tworoads_den/stephs_apwa_bt/device_tracker'
       scotts_g645_bt: 'monitor/tworoads_den/scotts_g645_bt/device_tracker'
-      audi_bt: 'monitor/tworoads_garage/audi/device_tracker'
-      explorer_bt: 'monitor/tworoads_garage/explorer/device_tracker'
-      rav4_bt: 'monitor/tworoads_garage/rav4/device_tracker'
-
-camera:
-  - platform: uvc
-    nvr: !secret uvc_host
-    # port: 7443
-    key: !secret uvc_key
-    password: !secret uvc_pass
-    ssl: false
+      audi_q7_bt: 'monitor/tworoads_garage/audi_q7_bt/device_tracker'
+      audi_a6_bt: 'monitor/tworoads_garage/audi_a6_bt/device_tracker'
+      rav4_bt: 'monitor/tworoads_garage/rav4_bt/device_tracker'
+  - platform: mqtt_json
+    devices:
+      audi_a6_gps: 'location/car/audi_a6_gps'
+      audi_q7_gps: 'location/car/audi_q7_gps'
 
 logger:
   default: info
   logs:
-    homeassistant.components.automation: debug
+    homeassistant.components.automation: warning
+    homeassistant.components.command_line.switch: warning
 #    homeassistant.components.media_player: warning
 #    aiounifi: debug
 #    homeassistant.components.unifi: debug
@@ -80,56 +94,60 @@ pi_hole:
 
 # Sensors
 sensor:
-  - platform: mitemp_bt
-    rounding: True
-    decimals: 1
-    period: 60
-    log_spikes: False
-    use_median: False
-    active_scan: False
-    hci_interface: 0
-    batt_entities: False
+  - platform: bme280
+    name: Machine Room
+    monitored_conditions:
+      - temperature
+      - humidity
+      - pressure
+  - platform: gpsd
+    name: Tworoads GPS
+    host: 192.168.37.157
+    scan_interval: 60
+#  - platform: mitemp_bt
+#    rounding: True
+#    decimals: 1
+#    period: 60
+#    log_spikes: False
+#    use_median: False
+#    active_scan: False
+#    hci_interface: 0
+#    batt_entities: False
 #    name: Sensor1
 #    mac: '58:2D:34:34:DE:3C'
 #    monitored_conditions:
 #      - temperature
 #      - humidity
   - platform: mqtt
-    state_topic: 'monitor/tworoads_garage/explorer'
+    state_topic: 'monitor/tworoads_garage/audi_q7_bt'
     value_template: '{{ value_json.rssi }}'
     unit_of_measurement: 'dBm'
-    name: 'Explorer'
+    name: 'Audi Q7'
   - platform: mqtt
-    state_topic: 'monitor/tworoads_garage/audi'
+    state_topic: 'monitor/tworoads_garage/audi_a6_bt'
     value_template: '{{ value_json.rssi }}'
     unit_of_measurement: 'dBm'
-    name: 'Audi'
+    name: 'Audi A6'
   - platform: mqtt
-    state_topic: 'monitor/tworoads_garage/rav4'
+    state_topic: 'monitor/tworoads_garage/rav4_bt'
     value_template: '{{ value_json.rssi }}'
     unit_of_measurement: 'dBm'
     name: 'Rav4'
   - platform: mqtt
-    state_topic: 'environment/tworoads_den/bme280-temperature'
+    state_topic: 'environment/tworoads_garage/bme280_temperature'
+    name: 'Garage Temperature'
     unit_of_measurement: '°F'
-    name: 'Den Temperature'
   - platform: mqtt
-    state_topic: 'environment/tworoads_den/bme280-humidity'
-    unit_of_measurement: '% RH'
-    name: 'Den Humidity'    
+    state_topic: 'environment/tworoads_garage/bme280_humidity'
+    name: 'Garage Humidity'    
   - platform: mqtt
-    state_topic: 'environment/tworoads_den/bme280-pressure'
+    state_topic: 'environment/tworoads_garage/bme280_pressure'
     unit_of_measurement: 'hPa'
-    name: 'Den Pressure'
+    name: 'Garage Pressure'
   - platform: mqtt
-    state_topic: 'environment/tworoads_den/bme280-sealevel-pressure'
+    state_topic: 'environment/tworoads_garage/bme280_sealevel_pressure'
     unit_of_measurement: 'hPa'
-    name: 'Den Sealevel Pressure'
-  - platform: mqtt
-    name: 'Tasmota1 State'
-    state_topic: tele/tasmota1/STATE
-    value_template: '{{ value_json["Wifi"]["RSSI"] }}'
-    json_attributes_topic: 'tele/tasmota1/STATE'
+    name: 'Garage Sealevel Pressure'
   # Weewx Weather
   - platform: rest
     resource: http://192.168.37.157/weewx/daily.json
@@ -139,32 +157,7 @@ sensor:
     json_attributes:
       - current
       - almanac
-    value_template: '{{ value_json.location }}'
-  # UPS
-  - platform: nut
-    name: Basement UPS
-    host: !secret ups_host
-    port: 3493
-    alias: ups
-    username: !secret ups_user
-    password: !secret ups_pass
-    resources:
-      - ups.load
-#      - ups.realpower.nominal
-      - input.voltage
-      - battery.runtime
-      - ups.status.display
-  - platform: rest
-    name: "House Energy Data"
-    resource: "http://192.168.37.155:3480/data_request?id=variableget&DeviceNum=105%serviceId=urn:micasaverde-com:serviceId:EnergyMetering1&Variable=states"
-    method: "GET"
-    scan_interval: 60
-    json_attributes:
-      energy_delivered: '{{ value_json[21].value }}'
-      power_demand: '{{ value_json[23].value }}'
-      # - '{{ value_json[23] }}'
- #   value_template: '{{ { "energy_delivered": value_json[21].value, "power_demand": value_json[23].value } }}'
-    value_template: '{{ "active" }}'
+    value_template: '{{ value_json.time }}'
   - platform: rest
     name: "House Energy Delivered"
     resource: "http://192.168.37.155:3480/data_request?id=variableget&DeviceNum=105%serviceId=urn:micasaverde-com:serviceId:EnergyMetering1&Variable=states"
@@ -179,26 +172,53 @@ sensor:
     scan_interval: 60
     unit_of_measurement: kW
     value_template: '{{ (value_json[23].value | float) / 1000 | round(2) }}'
+  - platform: rest
+    name: "Vera House Mode"
+    resource: !secret vera_resource
+    method: "GET"
+    scan_interval: 20
+    value_template: >-
+      {% set mapper =  {                                                    
+        '1' : 'Home',
+        '2' : 'Away',                 
+        '3' : 'Night',
+        '4' : 'Vacation' } %}                
+      {{ mapper[value] }}            
   # Local System monitor
   - platform: systemmonitor
     resources:
       - type: memory_use_percent
+      - type: swap_use_percent
+      - type: disk_use_percent
+        arg: /
       - type: processor_use
       - type: load_1m
       - type: last_boot
   # Template      
   - platform: template
     sensors:
-    #   house_energy_delivered:
-    #     friendly_name: "House Energy Delivered"
-    #     value_template: "{{ states.sensor.house_energy_data.energy_delivered }}"
-    #     unit_of_measurement: "kWh"
-    #   house_power_demand:
-    #     friendly_name: "House Power Demand"
-    #     value_template: "{{ (states.sensor.house_energy_data.power_demand | float) / 1000 | round(2) }}"
-    #     unit_of_measurement: "kW"
+      internet_in_mbps:
+        friendly_name: "Internet WAN In"
+        unit_of_measurement: 'Mbps'
+        value_template: "{{ [((states('sensor.erx_wan_in_derivative') | float * 8) / 1000000) | round(2), 0] | max }}"
+        icon_template: mdi:download-network
+      internet_out_mbps:
+        friendly_name: "Internet WAN Out"
+        unit_of_measurement: 'Mbps'
+        value_template: "{{ [((states('sensor.erx_wan_out_derivative') | float * 8) / 1000000) | round(2), 0] | max }}"
+        icon_template: mdi:upload-network
+#      internet_in_mbps:
+#        friendly_name: "Internet WAN In"
+#        value_template: "{{ (state_attr('binary_sensor.edgeos_interface_pppoe0', 'MBytes/ps (Received)') * 8) | round(2) }}"
+#        unit_of_measurement: 'Mbps'
+#        icon_template: mdi:download-network
+#      internet_out_mbps:
+#        friendly_name: "Internet WAN Out"
+#        value_template: "{{ (state_attr('binary_sensor.edgeos_interface_pppoe0', 'MBytes/ps (Sent)') * 8) | round(2) }}"
+#        unit_of_measurement: 'Mbps'
+#        icon_template: mdi:upload-network
       ups_battery_minutes:
-        friendly_name: "Basement UPS Battery Minutes"
+        friendly_name: "UPS Battery Minutes"
         icon_template: mdi:timer
         value_template: "{{ ((states('sensor.ups_battery_runtime')) | float / 60) | round(0) }}"
         unit_of_measurement: "min"
@@ -206,19 +226,31 @@ sensor:
         friendly_name: Outside Temperature
         value_template: "{{ states.sensor.weewx_weather.attributes.current['outTemp'] }}"
         unit_of_measurement: '°F'
+      weewx_outside_dewpoint:                                                                                 
+        friendly_name: Outside Dewpoint                                                                       
+        value_template: "{{ states.sensor.weewx_weather.attributes.current['dewpoint'] }}"                        
+        unit_of_measurement: "°F"                                                                             
+      weewx_outside_windchill:                                                                                 
+        friendly_name: Outside Windchill
+        value_template: "{{ states.sensor.weewx_weather.attributes.current['windchill'] }}"                        
+        unit_of_measurement: "°F"                                                                              
+      weewx_outside_heat_index:                                                                                 
+        friendly_name: Outside Heat Index
+        value_template: "{{ states.sensor.weewx_weather.attributes.current['heatindex'] }}"                        
+        unit_of_measurement: "°F"                                                                              
       weewx_inside_temperature:
         friendly_name: Inside Temperature
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['insideTemp'] }}"
+        value_template: "{{ states.sensor.weewx_weather.attributes.current['inTemp'] }}"
         unit_of_measurement: '°F'
       weewx_outside_humidity:
         friendly_name: Outside Humidity
         icon_template: mdi:water-percent
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['humidity'] }}"
+        value_template: "{{ states.sensor.weewx_weather.attributes.current['outHumidity'] }}"
         unit_of_measurement: '%'
       weewx_inside_humidity:
         friendly_name: Inside Humidity
         icon_template: mdi:water-percent
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['insideHumidity'] }}"
+        value_template: "{{ states.sensor.weewx_weather.attributes.current['inHumidity'] }}"
         unit_of_measurement: '%'
       weewx_wind_speed:
         friendly_name: Wind Speed
@@ -229,53 +261,117 @@ sensor:
         friendly_name: Wind Direction
         icon_template: mdi:weather-windy
         value_template: "{{ states.sensor.weewx_weather.attributes.current['windDirText'] }}"
+      weewx_cloudbase:                                                             
+        friendly_name: Cloudbase
+        value_template: "{{ states.sensor.weewx_weather.attributes.current['cloudbase'] }}"   
+        unit_of_measurement: "ft"
       weewx_solar_altitude:
         friendly_name: Solar Altitude
         value_template: "{{ states.sensor.weewx_weather.attributes.almanac.sun['altitude'] }}"
         unit_of_measurement: '°'
       # http://www.csgnetwork.com/barcorrecthcalc.html - +11.1 for 300ft/100m
-      ambient_adjusted_pressure:
-        friendly_name: Ambient Adjusted Pressure
-        icon_template: mdi:gauge
-        value_template: "{{ ((states('sensor.ambient_pressure')) | float + 11.1) | round(1) }}"
-        unit_of_measurement: 'mb'
-      tworoads_dns_query_rate:
-        friendly_name: DNS Query Rate
-        value_template: "{{ ((state_attr('sensor.tworoads_pi_hole_dns_queries_today_statistics','average_change')) | float * 2) }}"
-        unit_of_measurement: 'queries per min'
+#      ambient_adjusted_pressure:
+#        friendly_name: Ambient Adjusted Pressure
+#        icon_template: mdi:gauge
+#        value_template: "{{ ((states('sensor.ambient_pressure')) | float + 11.1) | round(1) }}"
+#        unit_of_measurement: 'mb'
+      last_boot_date_time:                                                                                                         
+        friendly_name: "Last Boot"                                                                                                 
+        value_template: '{{ states.sensor.last_boot.state.split("T")[0] }}'                                                        
+#      system_uptime:                                                                                                               
+#        friendly_name: System Uptime                                                                                               
+#        entity_id: sensor.time                                                                                                     
+#        value_template: >                                                                                                          
+#          {% set up_time = as_timestamp(now()) - as_timestamp(states('sensor.last_boot')) %}                                       
+#                                                                                                                                   
+#          {% set minutes = (up_time // 60) | int %}                                                                                
+#          {% set hours = (minutes // 60) %}                                                                                        
+#          {% set days = (hours // 24) %}                                                                                           
+#          {% set weeks = (days // 7) %}                                                                                            
+#                                                                                                                                   
+#          {% set minutes = (minutes % 60) %}                                                                                       
+#          {% set hours =  (hours % 24) %}                                                                                          
+#          {% set days = (days % 7) %}                                                                                              
+#                                                                                                                                   
+#          {% macro phrase(value, name) %}                                                                                          
+#                    {%- set value = value %}                                                                                       
+#                    {%- set end = 's' if value > 1 else '' %}                                                                      
+#                    {{- '{} {}{}'.format(value, name, end) if value | int > 0 else '' }}                                           
+#          {%- endmacro %}                                                                                                          
+#                                                                                                                                   
+#          {% set text = [ phrase(weeks, 'week'), phrase(days, 'day'), phrase(hours, 'hr'), phrase(minutes, 'min') ] | select('!=','') | list | join(', ') %}
+#          {% set last_comma = text.rfind(',') %}                                                                                                            
+#          {% if last_comma != -1 %}                                                                                                                         
+#            {% set text = text[:last_comma] + ' and' + text[last_comma + 1:] %}                                                                             
+#          {% endif %}                                                                                                                                       
+#                                                                                                                                                            
+#          {{ text }}                                                                                                                                        
   # CPU Temperature of pi
   - platform: command_line
     name: CPU Temperature
     command: "cat /sys/class/thermal/thermal_zone0/temp"
-    value_template: "{{ value | multiply(0.001) | float | round(1) }}"
+    value_template: "{{ value | multiply(0.001) | float | round(0) }}"
     unit_of_measurement: " °C"
-#    value_template: "{{ (value | multiply(0.0018) + 32) | float | round(2) }} °F"
-  - platform: statistics
-    name: tworoads_pi_hole_dns_queries_today_statistics
-    entity_id: sensor.tworoads_pi_hole_dns_queries_today
+#    value_template: "{{ (value | multiply(0.0018) + 32) | float | round(0) }} °F"
+  - platform: filesize                                                                                                             
+    file_paths:                                                                                                                    
+      - /config/home-assistant_v2.db                                                                                               
+#  - platform: command_line                                                                                                         
+#    name: installed_version_2                                                                                                      
+#    command: "cat .HA_VERSION"                                                                                                     
+  - platform: version                                                                                                              
+    name: latest_available_version                                                                                                 
+    source: hassio                                                                                                                 
+  - platform: version                                                                                                              
+    name: installed_version                                                                                                                                 
   - platform: uptime
   - platform: time_date
     display_options:
       - 'time'
-      - 'date'
-      - 'date_time'
-      - 'date_time_utc'
-      - 'date_time_iso'
-      - 'time_date'
-      - 'time_utc'
+#      - 'date'
+#      - 'date_time'
+#      - 'date_time_utc'
+#      - 'date_time_iso'
+#      - 'time_date'
+#      - 'time_utc'
   - platform: snmp
     host: 192.168.37.162
-    baseoid: .1.3.6.1.2.1.25.1.8.1
+    baseoid: 1.3.6.1.2.1.25.1.8.1
     name: raspi_den_tr_cpu_temperature
+    scan_interval: 60
     value_template: "{{ value }}"
     unit_of_measurement: " °C"
   - platform: snmp
-    host: 192.168.37.162
-    baseoid: .1.3.6.1.2.1.25.1.8.1
+    host: 192.168.37.163
+    baseoid: 1.3.6.1.2.1.25.1.8.1
     name: raspi_garage_tr_cpu_temperature
+    scan_interval: 60
     value_template: "{{ value }}"
     unit_of_measurement: " °C"
-
+  - platform: snmp
+    name: erx_wan_in
+    host: 192.168.37.254
+    baseoid: 1.3.6.1.2.1.31.1.1.1.6.10
+    community: public
+    version: '2c'
+    scan_interval: 10
+  - platform: snmp
+    name: erx_wan_out
+    host: 192.168.37.254
+    baseoid: 1.3.6.1.2.1.31.1.1.1.10.10
+    community: public
+    version: '2c'
+    scan_interval: 10
+  - platform: derivative
+    name: erx_wan_in_derivative
+    source: sensor.erx_wan_in
+    unit_time: s
+    unit: B
+  - platform: derivative
+    name: erx_wan_out_derivative
+    source: sensor.erx_wan_out
+    unit_time: s
+    unit: B
 # Add the moon
   - platform: moon
 
@@ -287,18 +383,6 @@ switch:
         command_off: !secret tworoads_pihole_disable
         command_state: !secret tworoads_pihole_status
         value_template: "{{ value_json.status == 'enabled' }}"
-  - platform: mqtt
-    name: "Tasmon1"
-    state_topic: "stat/tasmota1/POWER"
-    command_topic: "cmnd/tasmota1/POWER"
-    availability_topic: "tele/tasmota1/LWT"
-    qos: 1
-    payload_on: "ON"
-    payload_off: "OFF"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    retain: false
-
 
 utility_meter:
   daily_energy:
@@ -319,10 +403,10 @@ weather:
     scan_interval:
       minutes: 15
 # NWS weather
-  - platform: nws
-    mode: daynight # default daynight
-    station: KTIW
-    api_key: srp@tworoads.net
+#  - platform: nws
+#    mode: daynight # default daynight
+#    station: KTIW
+#    api_key: srp@tworoads.net
 
 frontend:
   # your configuration.
@@ -330,35 +414,41 @@ frontend:
   # your configuration.
 
 # Text to speech
-tts:
-  - platform: google_translate
+#tts:
+#  - platform: google_translate
 
 lovelace:
   mode: yaml
   resources:
-    - url: /hacsfiles/bignumber-card/bignumber-card.js?v=0.0.2
+    - url: /hacsfiles/bignumber-card/bignumber-card.js
       type: module
-    - url: /hacsfiles/custom-header/custom-header.js?v=0.0.2
+    - url: /hacsfiles/lovelace-card-tools/card-tools.js
       type: module
-    - url: /hacsfiles/lovelace-card-tools/card-tools.js?v=0.0.2
+    - url: /hacsfiles/secondaryinfo-entity-row/secondaryinfo-entity-row.js
       type: module
-    - url: /hacsfiles/secondaryinfo-entity-row/secondaryinfo-entity-row.js?=0.0.2
+    - url: /hacsfiles/flex-horseshoe-card/flex-horseshoe-card.js
       type: module
-    - url: /hacsfiles/flex-horseshoe-card/flex-horseshoe-card.js?v=0.0.2
+    - url: /hacsfiles/lovelace-multiple-entity-row/multiple-entity-row.js                                                          
+      type: module                                                                                                                 
+    - url: /hacsfiles/bar-card/bar-card.js                                                                                         
+      type: module                                                                                                                 
+    - url: /hacsfiles/simple-thermostat/simple-thermostat.js
       type: module
-    - url: /hacsfiles/simple-thermostat/simple-thermostat.js?v=0.0.2
+    - url: /hacsfiles/button-card/button-card.js
       type: module
-    - url: /hacsfiles/button-card/button-card.js?v=0.0.2
-      type: module
-    - url: /local/vertical-style-card.js?v=0.0.2
+    - url: /local/vertical-style-card.js
       type: js
-    - url: /hacsfiles/entity-attributes-card/entity-attributes-card.js?v=0.0.2
+    - url: /hacsfiles/entity-attributes-card/entity-attributes-card.js
+      type: module
+    - url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js
       type: module
 
 history: !include history.yaml
 recorder: !include recorder.yaml
-# group: !include groups.yaml
-zone: !include zones.yaml
-binary_sensor: !include binary_sensor.yaml
 automation: !include automations.yaml
+automation split: !include_dir_list automations
+# binary_sensor: !include binary_sensor.yaml
+# group: !include groups.yaml
 script: !include scripts.yaml
+rest_command: !include rest.yaml
+zone: !include zones.yaml

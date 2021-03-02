@@ -1,0 +1,11 @@
+title: Sensors
+icon: mdi:thermometer-lines
+path: sensors
+cards:
+  - entities:
+      - entity: sensor.garage_temperature
+      - entity: sensor.garage_humidity
+      - entity: sensor.garage_pressure
+      - entity: sensor.garage_sealevel_pressure
+    title: Garage BME280
+    type: entities

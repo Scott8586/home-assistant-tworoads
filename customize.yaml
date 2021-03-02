@@ -5,12 +5,11 @@ person.stephanie:
 sensor.memory_use_percent:
   friendly_name: Memory use
 sensor.raspi_den_tr_cpu_temperature:
-  friendly_name: "Den raspi8 CPU Temp"
+  friendly_name: Den raspi8 CPU Temp
 sensor.raspi_garage_tr_cpu_temperature:
-  friendly_name: "Gararge raspi10 CPU Temp"
+  friendly_name: Gararge raspi10 CPU Temp
 weather.dark_sky:
   friendly_name: 'Dark Sky: Tacoma'
 zone.home:
   friendly_name: Tworoads
   icon: mdi:account-multiple
-

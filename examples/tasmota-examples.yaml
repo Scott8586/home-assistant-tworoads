@@ -1,0 +1,58 @@
+switch:
+  - platform: mqtt
+    name: "Tasmon1"
+    state_topic: "stat/tasmota1/POWER"
+    command_topic: "cmnd/tasmota1/POWER"
+    availability_topic: "tele/tasmota1/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+
+switch:
+  - platform: mqtt
+    name: "Tasmota Switch"
+    # the next two lines allow tracking RESULT from using "cmnd/tasmotas/state" at start/boot time as well.
+    state_topic: "stat/tasmota/RESULT"  
+    value_template: "{{ value_json.POWER }}"
+    command_topic: "cmnd/tasmota/POWER"
+    payload_on: "ON"
+    payload_off: "OFF"
+    availability_topic: "tele/tasmota/LWT"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    qos: 1
+    retain: false
+
+
+# Start actions
+- id: 'startactions'
+  alias: 'Start Actions'
+  trigger:
+    event: start
+    platform: homeassistant
+  condition: []
+  action:
+    # Send a telegram 
+    - service: notify.telegram_horizonview
+      data:
+        message: "Home Assistant (re)started"
+    - delay: 00:00:05
+    # Restart the monitor services
+    - service: mqtt.publish
+      data:
+        topic: "monitor/scan/restart"
+        payload: ""
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/tasmotas/state"
+        payload: ""
+
+sensor:
+  - platform: mqtt
+    name: 'Tasmota1 State'
+    state_topic: tele/tasmota1/STATE
+    value_template: '{{ value_json["Wifi"]["RSSI"] }}'
+    json_attributes_topic: tele/tasmota1/STATE

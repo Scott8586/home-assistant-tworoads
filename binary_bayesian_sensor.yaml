@@ -3,9 +3,13 @@
     both_home:
       friendly_name: 'Both Home'
       value_template: >-
-        {{ is_state('binary_sensor.scott_presence', 'on')
-           and is_state('binary_sensor.steph_presence', 'on')
+        {{ is_state('person.scott', 'home')
+           and is_state('person.stephanie', 'home')
         }}
+    #   value_template: >-
+    #     {{ is_state('binary_sensor.scott_presence', 'on')
+    #       and is_state('binary_sensor.steph_presence', 'on')
+    #     }}
 
 - platform: bayesian
   prior: 0.36
@@ -17,7 +21,7 @@
       prob_given_false: 0.1
       platform: 'state'
       to_state: 'home'
-    - entity_id: 'device_tracker.srp_iphone'
+    - entity_id: 'device_tracker.scott_s_iphone'
       prob_given_true: 0.9
       prob_given_false: 0.2
       platform: 'state'

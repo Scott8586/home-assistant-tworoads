@@ -1,0 +1,18 @@
+# Help message      
+id: 'helpmessage'
+alias: "C: Telegram Command Help"
+trigger:
+  platform: event
+  event_type: telegram_command
+  event_data:
+    command: '/help'
+action:
+  service: !secret telegram_notify
+  data:
+    title: "Commands:"
+    message: |
+      /ping - request a test response.
+      /reboot - reboot the HA host.
+      /restart - restart the HA container.
+      /weather - request a weather report.
+

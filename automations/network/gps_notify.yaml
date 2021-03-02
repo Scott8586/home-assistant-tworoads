@@ -1,0 +1,14 @@
+# GPS Radio Fix change                                                         
+id: 'gpsfixchange'                                        
+alias: 'N: GPS Radio Fix Change'
+initial_state: 'off'
+trigger:                                                                                         
+  platform: state                      
+  entity_id: sensor.vistasea_gps                                   
+condition:                         
+  condition: template                                                                
+  value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"      
+action:                              
+  service: !secret telegram_notify
+  data_template:                           
+    message: "{{ trigger.to_state.name }} is {{ trigger.to_state.state }}"

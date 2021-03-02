@@ -1,0 +1,11 @@
+# Person Home State
+id: 'personhome' 
+alias: 'Z: Person Home'
+trigger:                                                                                         
+  platform: state
+  entity_id: person.scott, person.stephanie
+  from: 'not_home'                         
+action:           
+  service: !secret telegram_notify
+  data_template:                   
+    message: "P: {{ trigger.to_state.name }} is {{ trigger.to_state.state }}"

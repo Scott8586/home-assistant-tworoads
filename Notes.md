@@ -1,7 +1,6 @@
-## Notes
+## Notee for Tworoads Home Assistant Install
 
-### Different Trackers, Bayesian Sensor for Presense
-#### June 3rd, 2019 
+### June 3rd, 2019 - Bayesian Sensor for Presence
 
 Have been trying out three different trackers, owntracks via MQTT, with broker on hub, separate internet facing computer:
 With a SSL/port 8883 based connection on the external interface, and a port 1883 based connection on the VPN interface.
@@ -41,3 +40,27 @@ Bayesian sensor for detecting presense at home looks like this:
       platform: 'state'
       to_state: 'home'
 ```
+
+### March 2nd, 2021
+
+1. Moved most of the automations to single task files, added leading letters:
+
+  - C: Command
+  - L: Location update/changes
+  - N: Notifications
+  - S: System Control
+  - Z: Zone Changes
+
+2. Added Vera Mode control code (copied from HorizonView).
+
+3. Removed Bayesian sensor for presense - just use normal person thing
+
+4. Added car Icons to car tracking stuff, via known_devices.yaml - may need to change this?
+
+5. Removed superflous secrets and traivs secrets
+
+6. Installed a UCKG2+ last night so:
+
+  - Updated UniFi controller host
+  - Moved to using Unifi Protect, reinstalled cameras
+

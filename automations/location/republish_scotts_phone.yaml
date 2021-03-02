@@ -1,0 +1,25 @@
+id: 'republishScottsPhone'
+alias: 'L: Scotts iPhone to MQTT'
+initial_state: 'on'
+trigger:
+  platform: state
+  entity_id: device_tracker.scott_s_iphone
+action:
+  - service: mqtt.publish
+    data_template:
+      topic: 'location/phone/srp_iphone_ios'
+      retain: false
+      payload:
+              '
+                  {"battery_level":{{ states.device_tracker.scott_s_iphone.attributes.battery_level }},
+                  "longitude":{{ states.device_tracker.scott_s_iphone.attributes.longitude }},
+                  "latitude":{{ states.device_tracker.scott_s_iphone.attributes.latitude }},
+                  "gps_accuracy":{{ states.device_tracker.scott_s_iphone.attributes.gps_accuracy }},
+                  "tst": {{ as_timestamp(now()) | int }},
+                  "_type":"location",
+                  "tid":"sc"}
+              '
+  # - service: notify.telegram_tworoads
+  #   data:
+  #     message: "Send location..."
+

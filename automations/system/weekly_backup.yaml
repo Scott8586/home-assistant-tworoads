@@ -1,0 +1,18 @@
+#0844df1a_remote_backup
+id: 'weeklybackup'         
+alias: 'S: Weekly Snapshot'
+initial_state: 'on'
+trigger:        
+  platform: time
+  at: '04:00:00'
+condition:                   
+- condition: time            
+  weekday:                       
+    - sat                          
+action:                            
+- service: hassio.addon_start          
+  data:                                
+    addon: 0844df1a_remote_backup  
+- service: !secret telegram_notify                  
+  data:                                
+    message: "Home Assistant backed up"

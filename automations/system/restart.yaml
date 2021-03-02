@@ -1,0 +1,13 @@
+# Restart message      
+id: 'restartmessage'
+alias: "C: Home Assistant Restart"
+trigger:
+  platform: event
+  event_type: telegram_command
+  event_data:
+    command: '/restart'
+action:
+  - service: !secret telegram_notify
+    data:
+      message: "Restarting..."
+  - service: homeassistant.restart

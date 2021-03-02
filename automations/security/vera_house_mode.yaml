@@ -1,0 +1,19 @@
+# Notify Vera State
+id: 'notifyverastate'
+alias: "N: Vera House Mode"
+initial_state: 'on'
+trigger:
+  platform: state
+  entity_id: sensor.vera_house_mode
+condition:
+  condition: and
+  conditions:
+    - condition: template
+      value_template: '{{ trigger.to_state.state != "unavailable" }}'
+    - condition: template
+      value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+action:
+  service: !secret telegram_notify
+  data_template:
+    message: "{{ trigger.to_state.name }} is {{ trigger.to_state.state }}"
+

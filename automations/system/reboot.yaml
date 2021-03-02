@@ -1,0 +1,14 @@
+# Reboot message      
+id: 'rebootmessage'
+alias: "C: Home Assistant Host Reboot"
+trigger:
+  platform: event
+  event_type: telegram_command
+  event_data:
+    command: '/reboot'
+action:
+  - service: !secret telegram_notify
+    data:
+      message: "Rebooting..."
+  - service: hassio.host_reboot
+

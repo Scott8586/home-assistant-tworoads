@@ -1,0 +1,23 @@
+# Weather Report
+id: 'weatherreport'
+alias: "N: Weather Report"
+trigger:
+  platform: event
+  event_type: telegram_command
+  event_data:
+    command: '/weather'
+action:
+  - service: !secret telegram_notify
+    data_template:
+      message: > 
+       Temp: {{ states('sensor.weewx_outside_temperature') }}F,
+       {% if (states('sensor.weewx_outside_temperature') | int) != (states('sensor.weewx_outside_heat_index') | int) %}
+       Heat: {{ states('sensor.weewx_outside_heat_index') }}F,
+       {% elif (states('sensor.weewx_outside_temperature') | int) != (states('sensor.weewx_outside_windchill') | int) %}
+       Chill: {{ states('sensor.weewx_outside_windchill') }}F,
+       {% endif %}
+       Humid: {{ states('sensor.weewx_outside_humidity') }},
+       Dewpt: {{ states('sensor.weewx_outside_dewpoint') }}F
+       {% if states('sensor.weewx_outside_temperature') | float - states('sensor.weewx_outside_dewpoint') | float < 1.0 and states('sensor.weewx_outside_humidity') | int > 95 %}         
+         Fog possible!
+       {% endif %}

@@ -1,0 +1,18 @@
+# Start actions                                                                     
+id: 'startactions'                                        
+alias: 'S: Start Actions'                 
+trigger:                            
+  event: start                              
+  platform: homeassistant        
+condition: []                              
+action:                       
+  # Send a telegram                                 
+  - service: !secret telegram_notify
+    data:                                                                                        
+      message: "Home Assistant (re)started"                                  
+  - delay: 00:00:05                
+  # Restart the monitor services   
+  - service: mqtt.publish                            
+    data:                                                                         
+      topic: "monitor/scan/restart"  
+      payload: ""        

@@ -1,0 +1,22 @@
+id: 'republishAudiQ7Location'                            
+alias: 'L: Audi Q7 Position to MQTT'                        
+initial_state: 'on'                                      
+trigger:                                                 
+  platform: state                                        
+  entity_id: device_tracker.audi_q7_position             
+action:                               
+  - service: mqtt.publish             
+    data_template:                    
+      topic: 'location/car/audi_q7_gps'
+      retain: false                    
+      payload:                         
+              '                        
+                  {"battery_level":100,
+                  "latitude":{{ state_attr("device_tracker.audi_q7_position", "latitude") }},
+                  "longitude":{{ state_attr("device_tracker.audi_q7_position", "longitude") }},
+                  "gps_accuracy":100,                                         
+                  "tst": {{ as_timestamp(now()) | int }},                     
+                  "_type":"location",                                         
+                  "tid":"sc"}                                                 
+              '                                                               
+

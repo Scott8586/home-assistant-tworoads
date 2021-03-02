@@ -1,0 +1,11 @@
+# Person Away State 
+id: 'personaway' 
+alias: 'Z: Person Away'
+trigger:                                                                                         
+  platform: state
+  entity_id: person.scott, person.stephanie
+  to: 'not_home'                   
+action:                                                   
+  service: !secret telegram_notify
+  data_template: 
+    message: "P: {{ trigger.to_state.name }} is Away"
