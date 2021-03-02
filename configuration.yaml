@@ -315,7 +315,8 @@ sensor:
 #    value_template: "{{ (value | multiply(0.0018) + 32) | float | round(0) }} °F"
   - platform: filesize                                                                                                             
     file_paths:                                                                                                                    
-      - /config/home-assistant_v2.db                                                                                               
+      - !secret database_file
+#      - /config/home-assistant_v2.db                                                                                               
 #  - platform: command_line                                                                                                         
 #    name: installed_version_2                                                                                                      
 #    command: "cat .HA_VERSION"                                                                                                     
