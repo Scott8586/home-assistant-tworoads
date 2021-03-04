@@ -1,0 +1,22 @@
+id: 'republishAudiQ7Home'                                                     
+alias: 'L: Audi Q7 Home to MQTT'                                                 
+initial_state: 'off'                                                        
+trigger:                                                 
+  platform: state                                        
+  entity_id: device_tracker.audi_q7_bt                   
+  to: 'home'                                             
+action:                                                  
+  - service: mqtt.publish                                
+    data_template:                                       
+      topic: 'location/car/audi_q7_gps'                  
+      retain: false                                      
+      payload:                                           
+              '                                          
+                  {"battery_level":100,                                       
+                  "longitude":{{ states.zone.tworoads.attributes.longitude }},
+                  "latitude":{{ states.zone.tworoads.attributes.latitude }},  
+                  "gps_accuracy":100,                                         
+                  "tst": {{ as_timestamp(now()) | int }},                     
+                  "_type":"location",                                         
+                  "tid":"sc"}                                                 
+              '                                                               
