@@ -84,6 +84,7 @@ logger:
   logs:
     homeassistant.components.automation: warning
     homeassistant.components.command_line.switch: warning
+    homeassistant.components.device_tracker.unifi: debug
 #    homeassistant.components.media_player: warning
 #    aiounifi: debug
 #    homeassistant.components.unifi: debug

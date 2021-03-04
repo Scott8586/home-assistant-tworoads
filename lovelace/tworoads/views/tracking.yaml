@@ -35,7 +35,7 @@ cards:
       - device_tracker.stephs_iphone_bt
       - device_tracker.stephs_apple_watch
       - device_tracker.stephs_apwa_bt
-      - device_tracker.stephs_ipad2
+      - device_tracker.stephs_ipad_air
       - device_tracker.stephs_ipad_bt
       - device_tracker.lp_bloomfield10
       - device_tracker.nancys_ipad

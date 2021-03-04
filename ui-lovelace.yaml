@@ -4,7 +4,6 @@ title: Tworoads
 views:
   - !include /config/lovelace/tworoads/views/home.yaml
   - !include /config/lovelace/tworoads/views/weather.yaml
-  - !include /config/lovelace/tworoads/views/pollen.yaml
-  - !include /config/lovelace/tworoads/views/media.yaml
   - !include /config/lovelace/tworoads/views/net_ops.yaml
+  - !include /config/lovelace/tworoads/views/tracking.yaml
   - !include /config/lovelace/tworoads/views/sensors.yaml
