@@ -1,0 +1,28 @@
+# Thermostat control                           
+id: 'thermocontrol'                                                                    
+alias: "C: Thermostat home/away"       
+initial_state: 'on'                 
+trigger:                                                  
+  platform: event                                                                 
+  event_type: telegram_command                                     
+  event_data:                                          
+    command: '/thermostat'                                                           
+action:                                                                   
+  - service: climate.set_preset_mode                   
+    data_template:                                                           
+      entity_id: climate.main_floor                    
+      preset_mode: >                                                                                                            
+        {% set token = trigger.event.data['args'][0] %} 
+        {% if token == 'away' %}
+          away 
+        {% elif token == 'home' %} 
+          none 
+        {% endif %} 
+  # everything else will just report status                                    
+  - service: !secret telegram_notify
+    data_template:                                                             
+      message: |
+        Preset: {{state_attr('climate.main_floor', 'preset_mode')}}
+        Setpoint: {{state_attr('climate.main_floor', 'temperature')}}F 
+        Now: {{state_attr('climate.main_floor', 'current_temperature')}}F
+        Action: {{state_attr('climate.main_floor', 'hvac_action')}}
