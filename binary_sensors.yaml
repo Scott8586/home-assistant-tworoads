@@ -1,0 +1,9 @@
+- platform: template
+  sensors:
+    both_home:
+      friendly_name: 'Both Home'
+      value_template: >-
+        {{ is_state('person.scott', 'home')
+           and is_state('person.stephanie', 'home')
+        }}
+

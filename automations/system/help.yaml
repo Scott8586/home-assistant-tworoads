@@ -11,8 +11,10 @@ action:
   data:
     title: "Commands:"
     message: |
+      /mode [home|away|night|vacation] - change Home mode.
       /ping - request a test response.
       /reboot - reboot the HA host.
       /restart - restart the HA container.
+      /thermostat [home|away|status] - change thermostat mode.
       /weather - request a weather report.
-
+      /usage - 24hr rolling internet usage.

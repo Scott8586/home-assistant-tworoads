@@ -6,13 +6,59 @@ badges:
   - entity: person.stephanie
   - entity: device_tracker.audi_a6_gps
   - entity: device_tracker.audi_q7_gps
-  - entity: device_tracker.rav4_bt
+  - entity: device_tracker.toyota_rav4_bt
 cards:
-  - entity: sensor.time
-    type: 'custom:bignumber-card'
-  - entity: weather.dark_sky
-    type: weather-forecast
-  - type: horizontal-stack              
+  - type: 'vertical-stack'
+    cards:
+    - type: 'custom:button-card'
+      entity: sensor.current_date_time
+      show_icon: false
+      show_label: false
+      show_name: false
+      show_state: true
+      styles:
+        state:
+        - font-size: 1.5em
+        - font-weight: bold
+        - text-transform: uppercase
+      card:
+      - border: '1px solid rgb(255, 255, 255)'
+      - height: 50px
+    - entity: weather.dark_sky
+      theme: default
+      type: weather-forecast
+    - type: 'custom:sun-card'
+  - type: 'vertical-stack'
+    title: Cameras
+    cards:
+     - entity: camera.tr_front_door
+       type: picture-entity
+     - entity: camera.tr_side_yard
+       type: picture-entity
+     - type: picture-elements
+       elements: []
+       entity: binary_sensor.motion_tr_front_door
+       camera_image: camera.front_door_snapshot
+     - type: picture-elements
+       elements: []
+       entity: binary_sensor.motion_tr_side_yard
+       camera_image: camera.side_yard_snapshot
+  - type: 'vertical-stack'
+    name: HVAC
+    cards:
+    - type: custom:simple-thermostat
+      entity: climate.main_floor
+      icon: false
+      step_layout: row
+      control:
+        hvac: true
+        preset:
+          away: true
+          temperature:
+            name: Hold
+          none:
+            name: Home
+  - type: 'horizontal-stack'  
     cards:                              
     - color: '#FFFFFF'                  
       color_type: card                  
@@ -86,22 +132,11 @@ cards:
         service_data:                   
           mode: 4                       
       type: 'custom:button-card'        
-  - entity: camera.tr_side_yard
-    type: picture-entity
-  - type: 'vertical-stack'
-    name: HVAC
-    cards:
-    - type: custom:simple-thermostat
-      entity: climate.main_floor
-      icon: false
-      step_layout: row
-      control:
-        preset:
-          away: true
-          temperature:
-            name: Hold
-          none:
-            name: Home
+#  - type: 'custom:vertical-style-card'  
+  - type: entities
+    entities:
+    - vacuum.tr_roomba_e5
+    - binary_sensor.tr_roomba_e5_bin_full
   - type: 'custom:vertical-style-card'
     title: Power
     style:

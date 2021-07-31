@@ -167,6 +167,10 @@ cards:
           url_path: http://hub.tworoads.net/gpsd.php?host=192.168.37.157
       - entity: sensor.raspi_den_tr_cpu_temperature
       - entity: sensor.raspi_garage_tr_cpu_temperature
+      - entity: sensor.room_assistant_den
+      - entity: sensor.den_tr_cluster_leader
+      - entity: sensor.room_assistant_garage
+      - entity: sensor.garage_tr_cluster_leader
   - entities:
       - binary_sensor.dirt_security_status
       - sensor.dirt_cpu_load_total

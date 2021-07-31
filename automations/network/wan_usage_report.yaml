@@ -1,0 +1,14 @@
+# Century Link Usage Report
+id: 'wanusagereport'
+alias: "N: WAN Usage Report"
+trigger:
+  platform: event
+  event_type: telegram_command
+  event_data:
+    command: '/usage'
+action:
+  - service: !secret telegram_notify
+    data_template:
+      message: > 
+       24 Hour WAN Usage: {{ state_attr('sensor.centurylink_wan_statistics', 'change') }} MiB
+

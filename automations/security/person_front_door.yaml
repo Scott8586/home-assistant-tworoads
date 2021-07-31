@@ -1,0 +1,13 @@
+id: 'personatfrontdoor'
+alias: 'N: Person at Front Door'
+trigger:
+- platform: state
+  entity_id: binary_sensor.motion_tr_front_door
+  to: person
+  attribute: event_object
+condition: []
+action:
+- service: !secret telegram_notify
+  data:
+    message: A person has been detected at the front door
+mode: single

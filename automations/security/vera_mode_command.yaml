@@ -1,0 +1,27 @@
+# Vera mode command
+id: 'veramodecommand'                                                                    
+alias: "C: Vera Mode Command"       
+initial_state: 'on'                 
+trigger:                                                  
+  platform: event                                                                 
+  event_type: telegram_command                                     
+  event_data:                                          
+    command: '/mode'                                                           
+action:                                                                   
+  - service: rest_command.hm_command
+    data_template:                                                           
+      mode: >                                                                                                            
+        {% set token = trigger.event.data['args'][0] %} 
+        {% if token == 'home' %}
+          1 
+        {% elif token == 'away' %} 
+          2 
+        {% elif token == 'night' %} 
+          3 
+        {% elif token == 'vacation' %} 
+          4 
+        {% endif %} 
+  # everything else will just report status                                    
+  - service: !secret telegram_notify
+    data_template:                                                             
+      message: Vera House Mode command received

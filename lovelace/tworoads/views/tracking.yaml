@@ -3,17 +3,17 @@ icon: mdi:crosshairs-gps
 badges:
   - entity: person.scott
   - entity: person.stephanie
-  - entity: device_tracker.audi_a6_bt
+  - entity: device_tracker.audi_a6_ibeacon_tracker
   - entity: device_tracker.audi_a6_gps
-  - entity: device_tracker.audi_q7_bt
+  - entity: device_tracker.audi_q7_ibeacon_tracker
   - entity: device_tracker.audi_q7_gps
-  - entity: device_tracker.audi_q7_position
-  - entity: device_tracker.rav4_bt
+#  - entity: device_tracker.audi_q7_position
+  - entity: device_tracker.toyota_rav4_ibeacon_tracker
 cards:
   - entities:
       - sensor.audi_a6
       - sensor.audi_q7
-      - sensor.rav4
+      - sensor.toyota_rav4
       - automation.car_zone_change
     title: Cars
     type: entities
@@ -22,21 +22,20 @@ cards:
       - sensor.scott_s_iphone_battery_state
       - sensor.scott_s_iphone_battery_level
       - device_tracker.scotts_iphone
-      - device_tracker.scotts_iphone_bt
-#      - device_tracker.scotts_g645_bt
+      - device_tracker.scotts_iphone_bt_tracker
       - device_tracker.scotts_ipad2
-      - device_tracker.scotts_ipad_bt
+      - device_tracker.scotts_ipad_bt_tracker
       - device_tracker.scotts_personal_mbp
       - device_tracker.scotts_work_mbp2
     title: Scott's Devices
     type: entities
   - entities:
       - device_tracker.stephs_iphone
-      - device_tracker.stephs_iphone_bt
+      - device_tracker.stephanies_iphone_bt_tracker
       - device_tracker.stephs_apple_watch
-      - device_tracker.stephs_apwa_bt
+      - device_tracker.stephanies_apple_watch_bt_tracker
       - device_tracker.stephs_ipad_air
-      - device_tracker.stephs_ipad_bt
+      - device_tracker.stephanies_ipad_air_bt_tracker
       - device_tracker.lp_bloomfield10
       - device_tracker.nancys_ipad
     title: Stephanie's Devices

@@ -51,9 +51,13 @@ notify:
     api_key: !secret telegram_apikey
     chat_id: !secret telegram_chatid
 
-mqtt:
-  discovery: true
-  discovery_prefix: homeassistant
+camera:
+  - platform: local_file
+    name: Front Door Snapshot
+    file_path: /config/www/snapshots/tr_front_door.png
+  - platform: local_file
+    name: Side Yard Snapshot
+    file_path: /config/www/snapshots/tr_side_yard.png
 
 climate:
   - platform: venstar
@@ -62,18 +66,18 @@ climate:
     humidifier: false
 
 device_tracker:
-  - platform: mqtt
-    source_type: bluetooth
-    devices:
-      scotts_iphone_bt: 'monitor/tworoads_den/scotts_iphone_bt/device_tracker'
-      stephs_iphone_bt: 'monitor/tworoads_den/stephs_iphone_bt/device_tracker'
-      scotts_ipad_bt: 'monitor/tworoads_den/scotts_ipad_bt/device_tracker'
-      stephs_ipad_bt: 'monitor/tworoads_den/stephs_ipad_bt/device_tracker'
-      stephs_apwa_bt: 'monitor/tworoads_den/stephs_apwa_bt/device_tracker'
-      scotts_g645_bt: 'monitor/tworoads_den/scotts_g645_bt/device_tracker'
-      audi_q7_bt: 'monitor/tworoads_garage/audi_q7_bt/device_tracker'
-      audi_a6_bt: 'monitor/tworoads_garage/audi_a6_bt/device_tracker'
-      rav4_bt: 'monitor/tworoads_garage/rav4_bt/device_tracker'
+#  - platform: mqtt
+#    source_type: bluetooth
+#    devices:
+#      scotts_iphone_bt: 'monitor/tworoads_den/scotts_iphone_bt/device_tracker'
+#      stephs_iphone_bt: 'monitor/tworoads_den/stephs_iphone_bt/device_tracker'
+#      scotts_ipad_bt: 'monitor/tworoads_den/scotts_ipad_bt/device_tracker'
+#      stephs_ipad_bt: 'monitor/tworoads_den/stephs_ipad_bt/device_tracker'
+#      stephs_apwa_bt: 'monitor/tworoads_den/stephs_apwa_bt/device_tracker'
+#      scotts_g645_bt: 'monitor/tworoads_den/scotts_g645_bt/device_tracker'
+#      audi_q7_bt: 'monitor/tworoads_garage/audi_q7_bt/device_tracker'
+#      audi_a6_bt: 'monitor/tworoads_garage/audi_a6_bt/device_tracker'
+#      toyota_rav4_bt: 'monitor/tworoads_garage/toyota_rav4_bt/device_tracker'
   - platform: mqtt_json
     devices:
       audi_a6_gps: 'location/car/audi_a6_gps'
@@ -82,16 +86,11 @@ device_tracker:
 logger:
   default: info
   logs:
-    homeassistant.components.automation: warning
-    homeassistant.components.command_line.switch: warning
+#   homeassistant.components.automation: debug
+#    homeassistant.components.command_line.switch: warning
     homeassistant.components.device_tracker.unifi: debug
-#    homeassistant.components.media_player: warning
-#    aiounifi: debug
-#    homeassistant.components.unifi: debug
-
-pi_hole:
-  - host: !secret tworoads_pihole_host
-    name: Tworoads Pi-hole
+#   homeassistant.components.media_player: warning
+#   homeassistant.components.unifi: debug
 
 # Sensors
 sensor:
@@ -120,20 +119,26 @@ sensor:
 #      - temperature
 #      - humidity
   - platform: mqtt
-    state_topic: 'monitor/tworoads_garage/audi_q7_bt'
-    value_template: '{{ value_json.rssi }}'
-    unit_of_measurement: 'dBm'
-    name: 'Audi Q7'
-  - platform: mqtt
-    state_topic: 'monitor/tworoads_garage/audi_a6_bt'
-    value_template: '{{ value_json.rssi }}'
-    unit_of_measurement: 'dBm'
+    state_topic: 'room-assistant/sensor/ble-audi-a6-ibeacon/attributes'
+    value_template: '{{ value_json.distance }}'
+    unit_of_measurement: 'm'
     name: 'Audi A6'
   - platform: mqtt
-    state_topic: 'monitor/tworoads_garage/rav4_bt'
-    value_template: '{{ value_json.rssi }}'
-    unit_of_measurement: 'dBm'
-    name: 'Rav4'
+    state_topic: 'room-assistant/sensor/ble-audi-q7-ibeacon/attributes'
+    value_template: '{{ value_json.distance }}'
+    unit_of_measurement: 'm' 
+    name: 'Audi Q7'          
+  - platform: mqtt
+    state_topic: 'room-assistant/sensor/ble-toyota-rav4-ibeacon/attributes'
+    value_template: '{{ value_json.distance }}'
+    unit_of_measurement: 'm' 
+    name: 'Toyota Rav4'          
+  - platform: mqtt                                                
+    name: "Room Assistant Den"
+    state_topic: room-assistant/status/den-tr
+  - platform: mqtt
+    name: "Room Assistant Garage"
+    state_topic: room-assistant/status/garage-tr
   - platform: mqtt
     state_topic: 'environment/tworoads_garage/bme280_temperature'
     name: 'Garage Temperature'
@@ -276,9 +281,18 @@ sensor:
 #        icon_template: mdi:gauge
 #        value_template: "{{ ((states('sensor.ambient_pressure')) | float + 11.1) | round(1) }}"
 #        unit_of_measurement: 'mb'
+      centurylink_wan_usage_gb:
+        friendly_name: CenturyLink Data Usage
+        unit_of_measurement: 'GiB'
+        value_template: "{{ ( states('sensor.centurylink_wan_usage') | float / 1048576) | round(2) }}"
       last_boot_date_time:                                                                                                         
         friendly_name: "Last Boot"                                                                                                 
         value_template: '{{ states.sensor.last_boot.state.split("T")[0] }}'                                                        
+      current_date_time:
+        friendly_name: "Current Date/Time"
+        value_template: >
+          {% set x = states('sensor.time') %}
+          {{ now().strftime("%A, %B %e") + now().strftime(", %-I:%M %p")}}
 #      system_uptime:                                                                                                               
 #        friendly_name: System Uptime                                                                                               
 #        entity_id: sensor.time                                                                                                     
@@ -318,9 +332,6 @@ sensor:
     file_paths:                                                                                                                    
       - !secret database_file
 #      - /config/home-assistant_v2.db                                                                                               
-#  - platform: command_line                                                                                                         
-#    name: installed_version_2                                                                                                      
-#    command: "cat .HA_VERSION"                                                                                                     
   - platform: version                                                                                                              
     name: latest_available_version                                                                                                 
     source: hassio                                                                                                                 
@@ -330,7 +341,7 @@ sensor:
   - platform: time_date
     display_options:
       - 'time'
-#      - 'date'
+      - 'date'
 #      - 'date_time'
 #      - 'date_time_utc'
 #      - 'date_time_iso'
@@ -374,6 +385,21 @@ sensor:
     source: sensor.erx_wan_out
     unit_time: s
     unit: B
+  - platform: snmp
+    host: 192.168.37.254
+    version: 2c
+    name: CenturyLink WAN Usage
+    scan_interval: 23
+    unit_of_measurement: 'KiB'
+    baseoid: 1.3.6.1.4.1.8072.1.3.2.4.1.2.10.119.97.110.95.117.115.97.103.101.0.1
+    accept_errors: true
+    value_template: '{{value | float}}'
+  - platform: statistics                                                   
+    name: CenturyLink WAN Statistics
+    entity_id: sensor.centurylink_wan_usage
+    sampling_size: 28800
+    max_age: 24:00:00
+
 # Add the moon
   - platform: moon
 
@@ -394,8 +420,8 @@ utility_meter:
     source: sensor.house_energy_delivered
     cycle: monthly
 
-iqvia:
-  zip_code: "98407"
+#iqvia:
+#  zip_code: "98407"
   
 weather:
 # Darksky
@@ -438,12 +464,16 @@ lovelace:
       type: module
     - url: /hacsfiles/button-card/button-card.js
       type: module
-    - url: /local/vertical-style-card.js
-      type: js
     - url: /hacsfiles/entity-attributes-card/entity-attributes-card.js
       type: module
     - url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js
       type: module
+    - url: /hacsfiles/home-assistant-sun-card/home-assistant-sun-card.js
+      type: module
+    - url: /hacsfiles/mini-media-player/mini-media-player-bundle.js
+      type: module
+    - url: /local/vertical-style-card.js
+      type: js
 
 history: !include history.yaml
 recorder: !include recorder.yaml
