@@ -1,6 +1,6 @@
 id: 'republishAudiQ7Location'                            
 alias: 'L: Audi Q7 Position to MQTT'                        
-initial_state: 'on'                                      
+initial_state: 'off'                                      
 trigger:                                                 
   platform: state                                        
   entity_id: device_tracker.audi_q7_position             

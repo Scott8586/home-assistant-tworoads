@@ -1,6 +1,5 @@
 id: 'republishAudiQ7Home'                                                     
 alias: 'L: Audi Q7 Home to MQTT'                                                 
-initial_state: 'off'                                                        
 trigger:                                                 
   platform: state                                        
   entity_id: device_tracker.audi_q7_ibeacon_tracker

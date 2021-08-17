@@ -1,6 +1,5 @@
 id: 'republishAudiA6Away'
 alias: 'L: Audi A6 Away to MQTT'
-initial_state: 'on'
 trigger:
   platform: state
   entity_id: device_tracker.audi_a6_ibeacon_tracker

@@ -20,4 +20,109 @@ cards:
       - sensor.moon
     title: Environment
     type: entities
+  - entities:                                                                                                                                                                 
+      - entity: sensor.weewx_outside_temperature                                                                                                                              
+        name: Temperature                                                                                                                                                     
+      - entity: sensor.weewx_outside_dewpoint                                                                                                                                 
+        name: Dewpoint                                                                                                                                                        
+      - entity: sensor.weewx_outside_humidity                                                                                                                                 
+        name: Humidity                                                                                                                                                        
+        y_axis: secondary                                                                                                                                                     
+    name: Outside Weather                                                                                                                                                     
+    group: false                                                                                                                                                              
+    hour24: true                                                                                                                                                              
+    line_width: 4                                                                                                                                                             
+    points_per_hour: 1                                                                                                                                                        
+    align_icon: left                                                                                                                                                          
+    align_header: left                                                                                                                                                        
+    show:                                                                                                                                                                     
+      extrema: false                                                                                                                                                          
+      average: false                                                                                                                                                          
+      fill: fade                                                                                                                                                              
+      icon: true                                                                                                                                                              
+      labels: true                                                                                                                                                            
+      name: true                                                                                                                                                              
+      state: true                                                                                                                                                             
+    style: |                                                                                                                                                                  
+      ha-card {                                                                                                                                                               
+        border: solid 2px var(--primary-color);                                                                                                                               
+      }                                                                                                                                                                       
+    type: 'custom:mini-graph-card'                                                                                                                                            
+  - entities:                                                                                                                                                                 
+#      - sensor.upstairs_thermostat_temperature                                                                                                                                
+      - sensor.weewx_inside_temperature                                                                                                                                       
+      - sensor.den_temperature                                                                                                                                       
+    name: Inside Temperature                                                                                                                                                
+    group: false                                                                                                                                                              
+    hour24: true                                                                                                                                                              
+    line_width: 4                                                                                                                                                             
+    points_per_hour: 1                                                                                                                                                        
+    align_icon: left                                                                                                                                                          
+    align_header: left                                                                                                                                                        
+    show:                                                                                                                                                                     
+      extrema: false                                                                                                                                                          
+      average: false                                                                                                                                                          
+      fill: fade                                                                                                                                                              
+      icon: true                                                                                                                                                              
+      labels: true                                                                                                                                                            
+      name: true                                                                                                                                                              
+      state: true                                                                                                                                                             
+    style: |                                                                                                                                                                  
+      ha-card {                                                                                                                                                               
+        border: solid 2px var(--primary-color);                                                                                                                               
+      }                                                                                                                                                                       
+    type: 'custom:mini-graph-card'                                                                                                                                            
+  - entities:                                   
+#      - sensor.upstairs_thermostat_temperature 
+      - sensor.weewx_inside_humidity         
+      - sensor.den_humidity               
+    name: Inside Humidity               
+    group: false                               
+    hour24: true                             
+    line_width: 4                          
+    points_per_hour: 1                          
+    align_icon: left                           
+    align_header: left                         
+    show:                                       
+      extrema: false                            
+      average: false                           
+      fill: fade                                
+      icon: true                               
+      labels: true                             
+      name: true                               
+      state: true                              
+    style: |                                    
+      ha-card {                                
+        border: solid 2px var(--primary-color);
+      }                                        
+    type: 'custom:mini-graph-card'             
+  - color_thresholds:                                                                                                                                                         
+    - color: '#e45e65'                                                                                                                                                        
+      value: 2000                                                                                                                                                             
+    - color: '#e0b400'                                                                                                                                                        
+      value: 1000                                                                                                                                                             
+    - color: '#0da035'                                                                                                                                                        
+      value: 0                                                                                                                                                                
+    color_thresholds_transition: hard                                                                                                                                         
+    entities:                                                                                                                                                                 
+      - sensor.den_eco2                                                                                                                                                    
+    group: false                                                                                                                                                              
+    hour24: true                                                                                                                                                              
+    line_width: 5                                                                                                                                                             
+    points_per_hour: 1                                                                                                                                                        
+    align_icon: left                                                                                                                                                          
+    align_header: left                                                                                                                                                        
+    show:                                                                                                                                                                     
+      extrema: false                                                                                                                                                          
+      average: false                                                                                                                                                          
+      fill: fade                                                                                                                                                              
+      icon: true                                                                                                                                                              
+      labels: false                                                                                                                                                           
+      name: true                                                                                                                                                              
+      state: true                                                                                                                                                             
+    style: |                                                                                                                                                                  
+      ha-card {                                                                                                                                                               
+        border: solid 2px var(--primary-color);                                                                                                                               
+      }                                                                                                                                                                       
+    type: 'custom:mini-graph-card'                                                                                                                                            
 

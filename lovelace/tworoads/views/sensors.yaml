@@ -3,6 +3,12 @@ icon: mdi:thermometer-lines
 path: sensors
 cards:
   - entities:
+      - entity: sensor.machine_room_temperature
+      - entity: sensor.machine_room_humidity
+      - entity: sensor.machine_room_pressure
+    title: Machine Room BME280
+    type: entities
+  - entities:
       - entity: sensor.garage_temperature
       - entity: sensor.garage_humidity
       - entity: sensor.garage_pressure

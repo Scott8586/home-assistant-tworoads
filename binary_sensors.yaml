@@ -6,4 +6,9 @@
         {{ is_state('person.scott', 'home')
            and is_state('person.stephanie', 'home')
         }}
-
+    both_away:
+      friendly_name: 'Both Away'
+      value_template: >-
+        {{ not is_state('person.scott', 'home')
+           and not is_state('person.stephanie', 'home')
+        }}

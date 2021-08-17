@@ -13,3 +13,11 @@ weather.dark_sky:
 zone.home:
   friendly_name: Tworoads
   icon: mdi:account-multiple
+device_tracker.audi_a6_gps:
+  friendly_name: Audi A6
+  icon: mdi:car
+device_tracker.audi_q7_gps:
+  friendly_name: Audi Q7
+  icon: mdi:car
+sensor.audi_q7:
+  icon: mdi:ruler

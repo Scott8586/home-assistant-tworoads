@@ -1,0 +1,14 @@
+device_tracker:                                                                    
+#  - platform: mqtt                                                                           
+#    source_type: bluetooth                                                                                                                                 
+#    devices:                                                                
+#      scotts_iphone_bt: 'monitor/tworoads_den/scotts_iphone_bt/device_tracker'      
+#      stephs_iphone_bt: 'monitor/tworoads_den/stephs_iphone_bt/device_tracker'
+#      scotts_ipad_bt: 'monitor/tworoads_den/scotts_ipad_bt/device_tracker'                  
+#      stephs_ipad_bt: 'monitor/tworoads_den/stephs_ipad_bt/device_tracker'                     
+#      stephs_apwa_bt: 'monitor/tworoads_den/stephs_apwa_bt/device_tracker'                     
+#      scotts_g645_bt: 'monitor/tworoads_den/scotts_g645_bt/device_tracker'                                                                                 
+#      audi_q7_bt: 'monitor/tworoads_garage/audi_q7_bt/device_tracker'           
+#      audi_a6_bt: 'monitor/tworoads_garage/audi_a6_bt/device_tracker'                      
+#      toyota_rav4_bt: 'monitor/tworoads_garage/toyota_rav4_bt/device_tracker'                     
+
