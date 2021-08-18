@@ -198,6 +198,12 @@ sensor:
         icon_template: mdi:timer
         value_template: "{{ ((states('sensor.ups_battery_runtime')) | float / 60) | round(0) }}"
         unit_of_measurement: "min"
+      ups_watts:
+        friendly_name: "UPS Watts"
+        device_class: power
+        unit_of_measurement: "W"
+        value_template: >-
+          {{ (states('sensor.ups_load') | float) * (states('sensor.ups_nominal_real_power') | float) / 100.0 }}
       weewx_outside_temperature:
         friendly_name: Outside Temperature
         value_template: "{{ states.sensor.weewx_weather.attributes.current['outTemp'] }}"
@@ -341,6 +347,12 @@ sensor:
     entity_id: sensor.centurylink_wan_usage
     sampling_size: 28800
     max_age: 24:00:00
+  - platform: integration
+    source: sensor.ups_watts
+    name: UPS Energy
+    unit_prefix: k
+    unit_time: h
+    round: 2
 
 # Add the moon
   - platform: moon

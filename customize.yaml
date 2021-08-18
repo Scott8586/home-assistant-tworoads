@@ -21,3 +21,5 @@ device_tracker.audi_q7_gps:
   icon: mdi:car
 sensor.audi_q7:
   icon: mdi:ruler
+sensor.ups_energy:
+  device_class: energy

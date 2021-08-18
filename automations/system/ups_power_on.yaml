@@ -1,0 +1,11 @@
+# UPS Power On                                                                                           
+id: 'upspoweron'
+alias: "N: :UPS Power On"                                                                                                        
+trigger:                                                                                            
+  platform: numeric_state                                                                              
+  entity_id: sensor.ups_input_voltage
+  above: 105
+action:                                                                                             
+  - service: !secret telegram_notify
+    data:                                                                     
+      message: "UPS Power On"                                      

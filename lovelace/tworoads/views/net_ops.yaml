@@ -191,22 +191,44 @@ cards:
       - binary_sensor.dirt_drive_2_exceeded_max_bad_sectors
     title: Synology NAS (dirt)
     type: entities
-  - entities:
-      - sensor.ups_status
-      - sensor.ups_load
-      - sensor.ups_input_voltage
-      - sensor.ups_battery_minutes
+  - cards:
+    - cards:
+        - entity: sensor.ups_battery_minutes
+          max: 100
+          min: 0
+          name: UPS Battery Minutes
+          severity:
+            red: 0
+            yellow: 10
+            green: 60
+          theme: default
+          type: gauge
+        - entity: sensor.ups_load
+          max: 100
+          min: 0
+          name: UPS Load
+          severity:
+            green: 0
+            yellow: 25
+            red: 50
+          theme: default
+          type: gauge
+      type: horizontal-stack
+    - entities:
+        - sensor.ups_status
+        - sensor.ups_input_voltage
+      type: entities
     title: Basement UPS
-    type: entities
+    type: vertical-stack
   - title: Tworoads Pi-hole
     type: entities
     entities:
-        - entity: switch.tworoads_pi_hole
-          name: Pi-hole operation
-        - entity: sensor.tworoads_pi_hole_ads_percentage_blocked_today
-          name: Percentage ads blocked today
-          type: "custom:secondaryinfo-entity-row"
-          secondary_info: "[[ sensor.tworoads_pi_hole_dns_unique_clients ]] unique clients"
-        - entity: sensor.tworoads_pi_hole_dns_queries_today
-          name: Number of DNS requests today
-          type: "custom:secondaryinfo-entity-row"
+      - entity: switch.tworoads_pi_hole
+        name: Pi-hole operation
+      - entity: sensor.tworoads_pi_hole_ads_percentage_blocked_today
+        name: Percentage ads blocked today
+        type: "custom:secondaryinfo-entity-row"
+        secondary_info: "[[ sensor.tworoads_pi_hole_dns_unique_clients ]] unique clients"
+      - entity: sensor.tworoads_pi_hole_dns_queries_today
+        name: Number of DNS requests today
+        type: "custom:secondaryinfo-entity-row"

@@ -1,0 +1,11 @@
+# UPS Power Off                                                                                           
+id: 'upspoweroff'
+alias: "N: UPS Power Off"                                                                                                        
+trigger:                                                                                            
+  platform: numeric_state                                                                              
+  entity_id: sensor.ups_input_voltage
+  below: 1
+action:                                                                                             
+  - service: !secret telegram_notify
+    data:                                                                     
+      message: "UPS Power Off"                                      

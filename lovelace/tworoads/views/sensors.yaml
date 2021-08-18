@@ -15,3 +15,11 @@ cards:
       - entity: sensor.garage_sealevel_pressure
     title: Garage BME280
     type: entities
+  - entities:
+    - entity: sensor.den_temperature
+    - entity: sensor.den_humidity
+    - entity: sensor.den_eco2
+    - entity: sensor.den_iaq
+    title: Den BME680
+    type: entities
+
