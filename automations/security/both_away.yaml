@@ -1,9 +1,8 @@
 alias: "A: Vacation Mode, after 16hrs"       
-initial_state: 'off'                 
 trigger:
   - platform: state
     entity_id: binary_sensor.both_away
-    to: 'yes'
+    to: 'on'
     for:
       hours: 16
 action:                                                                   
@@ -13,4 +12,3 @@ action:
   - service: !secret telegram_notify
     data_template:                                                             
       message: Enter Vaction mode, 16hrs inactive
-

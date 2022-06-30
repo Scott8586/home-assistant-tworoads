@@ -19,7 +19,8 @@ device_tracker.audi_a6_gps:
 device_tracker.audi_q7_gps:
   friendly_name: Audi Q7
   icon: mdi:car
-sensor.audi_q7:
-  icon: mdi:ruler
+device_tracker.toyota_rav4_gps:
+  friendly_name: Toyota Rav4
+  icon: mdi:car
 sensor.ups_energy:
   device_class: energy

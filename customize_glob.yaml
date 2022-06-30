@@ -5,13 +5,10 @@
 "sensor.*_temperature":
   icon: mdi:thermometer
   device_class: temperature
-"device_tracker.stephs_*":
-  entity_picture: https://www.gravatar.com/avatar/608e3038b8dd7098729f71371af81d14.jpg?s=80&d=wavatar
-  gravatar: steph@tworoads.net
 "device_tracker.steph*":
   entity_picture: https://www.gravatar.com/avatar/608e3038b8dd7098729f71371af81d14.jpg?s=80&d=wavatar
   gravatar: steph@tworoads.net
-"device_tracker.scotts_*":
+"device_tracker.scott*":
   entity_picture: https://www.gravatar.com/avatar/7ef327c7d17eb7c2466bbd613db99884.jpg?s=80&d=wavatar
   gravatar: srp@tworoads.net
 "sensor.*_gps":

@@ -3,18 +3,28 @@ icon: mdi:crosshairs-gps
 badges:
   - entity: person.scott
   - entity: person.stephanie
+  - entity: binary_sensor.both_home
+  - entity: binary_sensor.both_away
   - entity: device_tracker.audi_a6_ibeacon_tracker
   - entity: device_tracker.audi_a6_gps
   - entity: device_tracker.audi_q7_ibeacon_tracker
   - entity: device_tracker.audi_q7_gps
 #  - entity: device_tracker.audi_q7_position
   - entity: device_tracker.toyota_rav4_ibeacon_tracker
+  - entity: device_tracker.toyota_rav4_gps
 cards:
   - entities:
-      - sensor.audi_a6
-      - sensor.audi_q7
-      - sensor.toyota_rav4
-      - automation.car_zone_change
+      - type: custom:secondaryinfo-entity-row      
+        entity: sensor.audi_a6_distance
+        secondary_info: "Room: [[ sensor.audi_a6_ibeacon_room_presence ]]"
+      - type: custom:secondaryinfo-entity-row      
+        entity: sensor.audi_q7_distance
+        secondary_info: "Room: [[ sensor.audi_q7_ibeacon_room_presence ]]"
+      - type: custom:secondaryinfo-entity-row      
+        entity: sensor.toyota_rav4_distance
+        secondary_info: "Room: [[ sensor.toyota_rav4_ibeacon_room_presence ]]"
+      - automation.car_home
+      - automation.car_away
     title: Cars
     type: entities
   - entities:
@@ -22,21 +32,30 @@ cards:
       - sensor.scott_s_iphone_battery_state
       - sensor.scott_s_iphone_battery_level
       - device_tracker.scotts_iphone
-      - device_tracker.scotts_iphone_bt_tracker
+      - type: custom:secondaryinfo-entity-row      
+        entity: device_tracker.scotts_iphone_bt_tracker
+        secondary_info: "Room: [[ sensor.scotts_iphone_bt_room_presence ]]"
       - device_tracker.scotts_ipad2
-      - device_tracker.scotts_ipad_bt_tracker
-      - device_tracker.scotts_personal_mbp
+      - type: custom:secondaryinfo-entity-row      
+        entity: device_tracker.scotts_ipad_bt_tracker
+        secondary_info: "Room: [[ sensor.scotts_ipad_bt_room_presence ]]"
+      - type: custom:secondaryinfo-entity-row      
+        entity: device_tracker.scotts_ibeacon_tracker
+        secondary_info: "Room: [[ sensor.scotts_ibeacon_room_presence ]]"
+      - device_tracker.scottspsonalmbp
       - device_tracker.scotts_work_mbp2
     title: Scott's Devices
     type: entities
   - entities:
       - device_tracker.stephs_iphone
-      - device_tracker.stephanies_iphone_bt_tracker
       - device_tracker.stephs_apple_watch
-      - device_tracker.stephanies_apple_watch_bt_tracker
       - device_tracker.stephs_ipad_air
-      - device_tracker.stephanies_ipad_air_bt_tracker
-      - device_tracker.lp_bloomfield10
+      - type: custom:secondaryinfo-entity-row      
+        entity: device_tracker.stephs_ipad_bt_tracker
+        secondary_info: "Room: [[ sensor.stephs_ipad_bt_room_presence ]]"
+      - type: custom:secondaryinfo-entity-row
+        entity: device_tracker.stephs_ibeacon_tracker
+        secondary_info: "Room: [[ sensor.stephs_ibeacon_room_presence ]]"
       - device_tracker.nancys_ipad
     title: Stephanie's Devices
     type: entities

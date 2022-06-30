@@ -10,5 +10,5 @@ action:
   - service: !secret telegram_notify
     data_template:
       message: | 
-       24 Hour WAN Usage: {{ state_attr('sensor.centurylink_wan_statistics', 'change') | round(0) }} MiB
+       24 Hour WAN Usage: {{ states('sensor.centurylink_wan_statistics') | round(0) }} MiB
        Monthy LTE Usage: {{ states('sensor.centurylink_wan_usage_gb') | round(0) }} GiB

@@ -4,15 +4,14 @@ mode: single # Only run once at a time
 max_exceeded: silent # Hide warnings when triggered while in delay.
 trigger:
   platform: state
-  entity_id:
-   - binary_sensor.motion_tr_side_yard
+  entity_id: binary_sensor.tr_side_yard_motion
   to: 'on'
 action:
 #  - delay: '2'
 #  - service: unifiprotect.save_thumbnail_image
   - service: camera.snapshot
     data:
-      entity_id: camera.tr_side_yard
+      entity_id: camera.tr_side_yard_high
       filename: "/config/www/snapshots/tr_side_yard.png"
 #  - service: !secret telegram_notify
 #    data_template:

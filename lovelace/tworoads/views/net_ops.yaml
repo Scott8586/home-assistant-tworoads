@@ -76,7 +76,7 @@ cards:
 #           border: solid 2px var(--primary-color);
 #         }
 #       type: 'custom:mini-graph-card'
-#     type: 'custom:vertical-style-card'
+#     type: vertical-stack
 #     title: Internet
 #     style:
 #       font_size: 24px
@@ -162,7 +162,7 @@ cards:
             bar-card-value {                                     
               text-shadow: 1px 1px 5px black;                    
             }                                                    
-    type: 'custom:vertical-style-card'
+    type: vertical-stack
     style:
       font_size: 24px
       border: true
@@ -175,22 +175,15 @@ cards:
           url_path: http://hub.tworoads.net/gpsd.php?host=192.168.37.157
       - entity: sensor.raspi_den_tr_cpu_temperature
       - entity: sensor.raspi_garage_tr_cpu_temperature
-      - entity: sensor.room_assistant_den
-      - entity: sensor.den_tr_cluster_leader
-      - entity: sensor.room_assistant_garage
-      - entity: sensor.garage_tr_cluster_leader
-  - entities:
-      - binary_sensor.dirt_security_status
-      - sensor.dirt_cpu_load_total
-      - sensor.dirt_memory_usage_real
-      - sensor.dirt_drive_1_status
-      - sensor.dirt_drive_1_temperature
-      - binary_sensor.dirt_drive_1_exceeded_max_bad_sectors
-      - sensor.dirt_drive_2_status                                        
-      - sensor.dirt_drive_2_temperature                                   
-      - binary_sensor.dirt_drive_2_exceeded_max_bad_sectors
-    title: Synology NAS (dirt)
-    type: entities
+      - type: custom:secondaryinfo-entity-row
+        entity: sensor.room_assistant_basement
+        secondary_info: "Cluster: [[ sensor.basement_cluster_leader ]]"
+      - type: custom:secondaryinfo-entity-row
+        entity: sensor.room_assistant_den
+        secondary_info: "Cluster: [[ sensor.den_cluster_leader ]]"
+      - type: custom:secondaryinfo-entity-row
+        entity: sensor.room_assistant_garage
+        secondary_info: "Cluster: [[ sensor.garage_cluster_leader ]]"
   - cards:
     - cards:
         - entity: sensor.ups_battery_minutes

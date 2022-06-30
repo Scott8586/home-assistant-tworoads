@@ -1,13 +1,17 @@
 id: 'personatfrontdoor'
 alias: 'N: Person at Front Door'
+mode: single
+max_exceeded: silent
 trigger:
-- platform: state
-  entity_id: binary_sensor.motion_tr_front_door
+  platform: state
+  entity_id: binary_sensor.tr_front_door_motion
   to: person
   attribute: event_object
-condition: []
 action:
-- service: !secret telegram_notify
-  data:
-    message: A person has been detected at the front door
-mode: single
+  - service: camera.snapshot
+    data:
+      entitiy_id: camera.tr_front_door_high
+      filename: "/config/www/snapshots/tr_front_door.png" 
+  - service: !secret telegram_notify
+    data:
+      message: "Person at Front Door"

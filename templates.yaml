@@ -1,0 +1,120 @@
+binary_sensor:
+  - name: 'Both Home'
+    unique_id: both_home
+    state: "{{ is_state('person.scott', 'home') and is_state('person.stephanie', 'home') }}"
+  - name: 'Both Away'
+    unique_id: both_away
+    state: "{{ not is_state('person.scott', 'home') and not is_state('person.stephanie', 'home') }}"
+
+sensor:
+  - name: 'Internet In Mbps'
+    unique_id: internet_in_mbps
+    unit_of_measurement: 'Mbps'
+    icon: mdi:download-network
+    state: "{{ [((states('sensor.erx_wan_in_derivative') | float(default=0) * 8) / 1000000) | round(2), 0] | max }}"
+  - name: 'Internet Out Mbps'
+    unique_id: internet_out_mbps
+    icon: mdi:upload-network
+    unit_of_measurement: 'Mbps'
+    state: "{{ [((states('sensor.erx_wan_out_derivative') | float(default=0) * 8) / 1000000) | round(2), 0] | max }}"
+  - name: "UPS Battery Minutes"
+    icon: mdi:timer
+    unit_of_measurement: "min"
+    state: "{{ ((states('sensor.ups_battery_runtime')) | float(default=0) / 60) | round(0) }}"
+  - name: "UPS Watts"
+    device_class: power
+    unit_of_measurement: "W"
+    state: "{{ (states('sensor.ups_load') | float(default=0)) * (states('sensor.ups_nominal_real_power') | float(default=0)) / 100.0 }}"
+  - name: Guest Wifi Count                                                           
+    unique_id: guest_wifi_count                                                      
+    state: "{{ states.device_tracker | selectattr('state', 'eq', 'home') | selectattr('attributes.essid', 'eq', 'guest-tworoads') | list | count }}"
+  - name: Audi A6 Distance
+    unique_id: audi_a6_distance
+    state: "{{ state_attr('sensor.audi_a6_ibeacon_room_presence', 'distance') }}"
+    unit_of_measurement: 'm'                         
+  - name: Audi Q7 Distance
+    unique_id: audi_q7_distance
+    state: "{{ state_attr('sensor.audi_q7_ibeacon_room_presence', 'distance') }}"
+    unit_of_measurement: 'm'                         
+  - name: Toyota Rav4 Distance
+    unique_id: toyota_rav4_distance
+    state: "{{ state_attr('sensor.toyota_rav4_ibeacon_room_presence', 'distance') }}"
+    unit_of_measurement: 'm'                         
+  - name: WeeWx Weather Update
+    unique_id: weewx_weather_update
+    state: "{{ states.sensor.weewx_weather.attributes['time'] }}"
+  - name: WeeWx Outside Temperature
+    unique_id: weewx_outside_temperature
+    unit_of_measurement: '°F'
+    state: "{{ states.sensor.weewx_weather.attributes.current['outTemp'] }}"
+  - name: WeeWx Outside Dewpoint                                                                       
+    unique_id: weewx_outside_dewpoint                                                                                 
+    unit_of_measurement: "°F"                                                                             
+    state: "{{ states.sensor.weewx_weather.attributes.current['dewpoint'] }}"                        
+  - name: WeeWx Outside Windchill
+    unique_id: weewx_outside_windchill                                                                                 
+    unit_of_measurement: "°F"                                                                              
+    state: "{{ states.sensor.weewx_weather.attributes.current['windchill'] }}"                        
+  - name: WeeWx Outside Heat Index
+    unique_id: weewx_outside_heat_index                                                                                 
+    unit_of_measurement: "°F"                                                                              
+    state: "{{ states.sensor.weewx_weather.attributes.current['heatindex'] }}"                        
+  - name: WeeWx Rain Rate                                            
+    unique_id: weewx_rain_rate
+    unit_of_measurement: "in/h"   
+    state: "{{ states.sensor.weewx_weather.attributes.current['rainRate'] }}"
+  - name: WeeWx Rain Day              
+    unique_id: weewx_rain_day
+    state: "{{ states.sensor.weewx_weather.attributes.current['rainDaySum'] }}"
+    unit_of_measurement: "in"
+  - name: WeeWx Rain Year 
+    unique_id: weewx_rain_year
+    unit_of_measurement: "in"
+    state: "{{ states.sensor.weewx_weather.attributes.current['rainYearSum'] }}"
+  - name: WeeWx Basement Temperature
+    unique_id: weewx_basement_temperature
+    unit_of_measurement: '°F'
+    state: "{{ states.sensor.weewx_weather.attributes.current['inTemp'] }}"
+  - name: WeeWx Outside Humidity
+    unique_id:  weewx_outside_humidity
+    icon: mdi:water-percent
+    unit_of_measurement: '%'
+    state: "{{ states.sensor.weewx_weather.attributes.current['outHumidity'] }}"
+  - name: WeeWx Basement Humidity
+    unique_id: weewx_basement_humidity
+    icon: mdi:water-percent
+    unit_of_measurement: '%'
+    state: "{{ states.sensor.weewx_weather.attributes.current['inHumidity'] }}"
+  - name: WeeWx Wind Speed
+    unique_id: weewx_wind_speed
+    icon: mdi:weather-windy 
+    unit_of_measurement: 'mph'
+    state: "{{ states.sensor.weewx_weather.attributes.current['windSpeed'] }}"
+  - name: WeeWx Wind Direction
+    unique_id: weewx_wind_direction_ordinal
+    icon: mdi:weather-windy
+    state: "{{ states.sensor.weewx_weather.attributes.current['windDirText'] }}"
+  - name: WeeWx Cloudbase
+    unique_id: weewx_cloudbase                                                             
+    unit_of_measurement: "ft"
+    state: "{{ states.sensor.weewx_weather.attributes.current['cloudbase'] }}"   
+  - name: WeeWx Solar Altitude
+    unique_id: weewx_solar_altitude
+    unit_of_measurement: '°'
+    state: "{{ states.sensor.weewx_weather.attributes.almanac.sun['altitude'] }}"
+# http://www.csgnetwork.com/barcorrecthcalc.html - +11.1 for 300ft/100m
+#      ambient_adjusted_pressure:
+#        friendly_name: Ambient Adjusted Pressure
+#        icon_template: mdi:gauge
+#        value_template: "{{ ((states('sensor.ambient_pressure')) | float + 11.1) | round(1) }}"
+#        unit_of_measurement: 'mb'
+  - name: CenturyLink WAN Usage Gb
+    unique_id: centurylink_wan_usage_gb
+    unit_of_measurement: 'GiB'
+    state: "{{ ( states('sensor.centurylink_wan_usage') | float(default=0) / 1024) | round(2) }}"
+  - name: "Last Boot Date Time"                                                                                                 
+    unique_id: last_boot_date_time                                                                                                         
+    state: "{{ states.sensor.last_boot.state.split('T')[0] }}"                                                        
+  - name: "Current Date/Time"
+    unique_id: current_date_time
+    state: "{{ now().strftime('%a, %b %e') + now().strftime(' %-I:%M %p') }}"

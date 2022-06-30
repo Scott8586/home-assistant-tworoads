@@ -9,14 +9,15 @@ trigger:
     command: '/thermostat'                                                           
 action:                                                                   
   - service: climate.set_preset_mode                   
-    data_template:                                                           
+    target:                                                           
       entity_id: climate.main_floor                    
+    data:
       preset_mode: >                                                                                                            
         {% set token = trigger.event.data['args'][0] %} 
         {% if token == 'away' %}
-          away 
+          "away"
         {% elif token == 'home' %} 
-          none 
+          "none"
         {% endif %} 
   # everything else will just report status                                    
   - service: !secret telegram_notify

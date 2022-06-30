@@ -5,6 +5,7 @@ trigger:
   platform: state
   entity_id: >
     sensor.room_assistant_den,
+    sensor.room_assistant_basement,
     sensor.room_assistant_garage
 condition:
 - condition: template

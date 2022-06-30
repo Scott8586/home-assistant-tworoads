@@ -61,24 +61,19 @@ camera:
     name: Side Yard Snapshot
     file_path: /config/www/snapshots/tr_side_yard.png
 
-climate:
-  - platform: venstar
-    host: !secret venstar_host1
-    ssl: false
-    humidifier: false
-
 device_tracker:
   - platform: mqtt_json
     devices:
       audi_a6_gps: 'location/car/audi_a6_gps'
       audi_q7_gps: 'location/car/audi_q7_gps'
+      toyota_rav4_gps: 'location/car/toyota_rav4_gps'
 
 logger:
   default: info
   logs:
 #   homeassistant.components.automation: debug
 #    homeassistant.components.command_line.switch: warning
-    homeassistant.components.device_tracker.unifi: debug
+    homeassistant.components.device_tracker.unifi: info
 #   homeassistant.components.media_player: warning
 #   homeassistant.components.unifi: debug
 
@@ -88,27 +83,15 @@ sensor:
     name: Tworoads GPS
     host: 192.168.37.157
     scan_interval: 60
-  - platform: mqtt
-    state_topic: 'room-assistant/sensor/ble-audi-a6-ibeacon/attributes'
-    value_template: '{{ value_json.distance }}'
-    unit_of_measurement: 'm'
-    name: 'Audi A6'
-  - platform: mqtt
-    state_topic: 'room-assistant/sensor/ble-audi-q7-ibeacon/attributes'
-    value_template: '{{ value_json.distance }}'
-    unit_of_measurement: 'm' 
-    name: 'Audi Q7'          
-  - platform: mqtt
-    state_topic: 'room-assistant/sensor/ble-toyota-rav4-ibeacon/attributes'
-    value_template: '{{ value_json.distance }}'
-    unit_of_measurement: 'm' 
-    name: 'Toyota Rav4'          
+  - platform: mqtt                                                
+    name: "Room Assistant Basement"
+    state_topic: room-assistant/status/basement
   - platform: mqtt                                                
     name: "Room Assistant Den"
-    state_topic: room-assistant/status/den-tr
+    state_topic: room-assistant/status/den
   - platform: mqtt
     name: "Room Assistant Garage"
-    state_topic: room-assistant/status/garage-tr
+    state_topic: room-assistant/status/garage
   - platform: mqtt
     state_topic: 'environment/tworoads_garage/bme280_temperature'
     name: 'Garage Temperature'
@@ -131,9 +114,10 @@ sensor:
     scan_interval: 150
     force_update: true
     json_attributes:
+      - time
       - current
       - almanac
-    value_template: '{{ value_json.time }}'
+    value_template: '{{ value_json.location }}'
   - platform: rest
     name: "House Energy Delivered"
     resource: "http://192.168.37.155:3480/data_request?id=variableget&DeviceNum=105%serviceId=urn:micasaverde-com:serviceId:EnergyMetering1&Variable=states"
@@ -170,106 +154,6 @@ sensor:
       - type: processor_use
       - type: load_1m
       - type: last_boot
-  # Template      
-  - platform: template
-    sensors:
-      internet_in_mbps:
-        friendly_name: "Internet WAN In"
-        unit_of_measurement: 'Mbps'
-        value_template: "{{ [((states('sensor.erx_wan_in_derivative') | float * 8) / 1000000) | round(2), 0] | max }}"
-        icon_template: mdi:download-network
-      internet_out_mbps:
-        friendly_name: "Internet WAN Out"
-        unit_of_measurement: 'Mbps'
-        value_template: "{{ [((states('sensor.erx_wan_out_derivative') | float * 8) / 1000000) | round(2), 0] | max }}"
-        icon_template: mdi:upload-network
-#      internet_in_mbps:
-#        friendly_name: "Internet WAN In"
-#        value_template: "{{ (state_attr('binary_sensor.edgeos_interface_pppoe0', 'MBytes/ps (Received)') * 8) | round(2) }}"
-#        unit_of_measurement: 'Mbps'
-#        icon_template: mdi:download-network
-#      internet_out_mbps:
-#        friendly_name: "Internet WAN Out"
-#        value_template: "{{ (state_attr('binary_sensor.edgeos_interface_pppoe0', 'MBytes/ps (Sent)') * 8) | round(2) }}"
-#        unit_of_measurement: 'Mbps'
-#        icon_template: mdi:upload-network
-      ups_battery_minutes:
-        friendly_name: "UPS Battery Minutes"
-        icon_template: mdi:timer
-        value_template: "{{ ((states('sensor.ups_battery_runtime')) | float / 60) | round(0) }}"
-        unit_of_measurement: "min"
-      ups_watts:
-        friendly_name: "UPS Watts"
-        device_class: power
-        unit_of_measurement: "W"
-        value_template: >-
-          {{ (states('sensor.ups_load') | float) * (states('sensor.ups_nominal_real_power') | float) / 100.0 }}
-      weewx_outside_temperature:
-        friendly_name: Outside Temperature
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['outTemp'] }}"
-        unit_of_measurement: '°F'
-      weewx_outside_dewpoint:                                                                                 
-        friendly_name: Outside Dewpoint                                                                       
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['dewpoint'] }}"                        
-        unit_of_measurement: "°F"                                                                             
-      weewx_outside_windchill:                                                                                 
-        friendly_name: Outside Windchill
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['windchill'] }}"                        
-        unit_of_measurement: "°F"                                                                              
-      weewx_outside_heat_index:                                                                                 
-        friendly_name: Outside Heat Index
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['heatindex'] }}"                        
-        unit_of_measurement: "°F"                                                                              
-      weewx_inside_temperature:
-        friendly_name: Inside Temperature
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['inTemp'] }}"
-        unit_of_measurement: '°F'
-      weewx_outside_humidity:
-        friendly_name: Outside Humidity
-        icon_template: mdi:water-percent
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['outHumidity'] }}"
-        unit_of_measurement: '%'
-      weewx_inside_humidity:
-        friendly_name: Inside Humidity
-        icon_template: mdi:water-percent
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['inHumidity'] }}"
-        unit_of_measurement: '%'
-      weewx_wind_speed:
-        friendly_name: Wind Speed
-        icon_template: mdi:weather-windy 
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['windSpeed'] }}"
-        unit_of_measurement: 'mph'
-      weewx_wind_direction_ordinal:
-        friendly_name: Wind Direction
-        icon_template: mdi:weather-windy
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['windDirText'] }}"
-      weewx_cloudbase:                                                             
-        friendly_name: Cloudbase
-        value_template: "{{ states.sensor.weewx_weather.attributes.current['cloudbase'] }}"   
-        unit_of_measurement: "ft"
-      weewx_solar_altitude:
-        friendly_name: Solar Altitude
-        value_template: "{{ states.sensor.weewx_weather.attributes.almanac.sun['altitude'] }}"
-        unit_of_measurement: '°'
-      # http://www.csgnetwork.com/barcorrecthcalc.html - +11.1 for 300ft/100m
-#      ambient_adjusted_pressure:
-#        friendly_name: Ambient Adjusted Pressure
-#        icon_template: mdi:gauge
-#        value_template: "{{ ((states('sensor.ambient_pressure')) | float + 11.1) | round(1) }}"
-#        unit_of_measurement: 'mb'
-      centurylink_wan_usage_gb:
-        friendly_name: CenturyLink Data Usage
-        unit_of_measurement: 'GiB'
-        value_template: "{{ ( states('sensor.centurylink_wan_usage') | float / 1024) | round(2) }}"
-      last_boot_date_time:                                                                                                         
-        friendly_name: "Last Boot"                                                                                                 
-        value_template: '{{ states.sensor.last_boot.state.split("T")[0] }}'                                                        
-      current_date_time:
-        friendly_name: "Current Date/Time"
-        value_template: >
-          {% set x = states('sensor.time') %}
-          {{ now().strftime("%A, %B %e") + now().strftime(", %-I:%M %p")}}
-  # CPU Temperature of pi
   - platform: command_line
     name: CPU Temperature
     command: "cat /sys/class/thermal/thermal_zone0/temp"
@@ -279,12 +163,6 @@ sensor:
   - platform: filesize                                                                                                             
     file_paths:                                                                                                                    
       - !secret database_file
-#      - /config/home-assistant_v2.db                                                                                               
-  - platform: version                                                                                                              
-    name: latest_available_version                                                                                                 
-    source: hassio                                                                                                                 
-  - platform: version                                                                                                              
-    name: installed_version                                                                                                                                 
   - platform: uptime
   - platform: time_date
     display_options:
@@ -345,8 +223,10 @@ sensor:
   - platform: statistics                                                   
     name: CenturyLink WAN Statistics
     entity_id: sensor.centurylink_wan_usage
+    state_characteristic: change
     sampling_size: 28800
-    max_age: 24:00:00
+    max_age:
+      hours: 24
   - platform: integration
     source: sensor.ups_watts
     name: UPS Energy
@@ -397,11 +277,6 @@ weather:
 #    station: KTIW
 #    api_key: srp@tworoads.net
 
-frontend:
-  # your configuration.
-  themes: !include_dir_merge_named themes
-  # your configuration.
-
 # Text to speech
 #tts:
 #  - platform: google_translate
@@ -433,15 +308,22 @@ lovelace:
       type: module
     - url: /hacsfiles/mini-media-player/mini-media-player-bundle.js
       type: module
-    - url: /local/vertical-style-card.js
-      type: js
+    - url: /hacsfiles/compass-card/compass-card.js
+      type: module
+
+frontend:
+  themes: !include_dir_merge_named themes
+  extra_module_url:
+    - /hacsfiles/lovelace-card-mod/card-mod.js
 
 history: !include history.yaml
 recorder: !include recorder.yaml
 automation: !include automations.yaml
 automation split: !include_dir_list automations
-# binary_sensor: !include binary_sensor.yaml
-# group: !include groups.yaml
+#binary_sensor: !include binary_sensors.yaml
+#group: !include groups.yaml
+scene: !include scenes.yaml
 script: !include scripts.yaml
+template: !include templates.yaml
 rest_command: !include rest.yaml
 zone: !include zones.yaml

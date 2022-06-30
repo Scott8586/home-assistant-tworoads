@@ -4,23 +4,89 @@ path: weather
 theme: default
 badges: []
 cards:
-  - entities:
-      - sensor.weewx_weather
-      - sensor.weewx_outside_temperature
-      - sensor.weewx_outside_humidity
-      - sensor.weewx_wind_speed
-      - sensor.weewx_wind_direction_ordinal
-      - sensor.weewx_inside_temperature
-      - sensor.weewx_inside_humidity
-    title: Weather Station
-    type: entities
-  - entities:
-      - sun.sun
-      - sensor.weewx_solar_altitude
-      - sensor.moon
-    title: Environment
-    type: entities
-  - entities:                                                                                                                                                                 
+#  - type: entities
+#    title: Environment
+#    entities:
+#      - entity: sun.sun                        
+#        type: "custom:secondaryinfo-entity-row"                           
+#        secondary_info: "Altitude: [[ sensor.weewx_solar_altitude ]]"
+#      - entity: sensor.moon                                          
+#      - type: custom:multiple-entity-row
+#        entity: sensor.weewx_outside_humidity
+#        icon: mdi:thermometer
+#        name: Outside
+#        state_header: Humidity
+#        entities:
+#          - entity: sensor.weewx_outside_temperature
+#            name: Temp
+#      - type: custom:multiple-entity-row
+#        entity: sensor.weewx_outside_dewpoint
+#        icon: mdi:thermometer
+#        name: Chill/Dewpoint
+#        state_header: DewPt
+#        entities:
+#          - entity: sensor.weewx_outside_windchill
+#            name: Chill
+#      - type: custom:multiple-entity-row
+#        entity: sensor.weewx_inside_humidity
+#        name: Basement
+#        state_header: Humidity
+#        icon: mdi:thermometer
+#        entities:
+#          - entity: sensor.weewx_inside_temperature
+#            name: Temp
+#      - type: custom:multiple-entity-row
+#        entity: sensor.weewx_wind_direction_ordinal
+#        name: Wind
+#        state_header: Dir.
+#        entities:
+#          - entity: sensor.weewx_wind_speed
+#            name: Speed
+#      - entity: sensor.weewx_weather
+#        secondary_info: last-updated
+  - type: vertical-stack                            
+    cards:                                          
+      - type: 'custom:compass-card'                 
+        header:                                     
+          title:                                    
+            value: Wind                             
+        indicator_sensors:                          
+          - sensor: sensor.weewx_wind_direction_ordinal
+        value_sensors:                                                
+          - sensor: sensor.weewx_wind_speed            
+        style: |                                       
+          ha-card {                                    
+            border: solid 2px var(--primary-color);    
+          }                                            
+      - type: horizontal-stack                         
+        cards:                                         
+          - entity: sensor.weewx_rain_day              
+            max: 2                                     
+            min: 0                                     
+            name: Rain Day Total                       
+            severity:                                  
+              green: 0                                 
+              yellow: 1                                
+              red: 2                                   
+            theme: default                             
+            type: gauge                                
+          - entity: sensor.weewx_rain_year             
+            max: 64                                    
+            min: 0                                     
+            name: Rain Year Total                      
+            severity:                                  
+              red: 0                                   
+              yellow: 16                               
+              green: 32                            
+            theme: default                         
+            type: gauge                            
+        style: |                                   
+          ha-card {                                
+            border: solid 2px var(--primary-color);
+            --ha-card-header-font-size: 30px;      
+          }                                        
+  - type: 'custom:mini-graph-card' 
+    entities:                                                                                                                                                                 
       - entity: sensor.weewx_outside_temperature                                                                                                                              
         name: Temperature                                                                                                                                                     
       - entity: sensor.weewx_outside_dewpoint                                                                                                                                 
@@ -47,11 +113,11 @@ cards:
       ha-card {                                                                                                                                                               
         border: solid 2px var(--primary-color);                                                                                                                               
       }                                                                                                                                                                       
-    type: 'custom:mini-graph-card'                                                                                                                                            
-  - entities:                                                                                                                                                                 
-#      - sensor.upstairs_thermostat_temperature                                                                                                                                
-      - sensor.weewx_inside_temperature                                                                                                                                       
+  - type: 'custom:mini-graph-card'                                                                                                                                            
+    entities:                                                                                                                                                                 
       - sensor.den_temperature                                                                                                                                       
+      - sensor.office_temperature                                                                                                                                       
+      - sensor.weewx_basement_temperature                                                                                                                                       
     name: Inside Temperature                                                                                                                                                
     group: false                                                                                                                                                              
     hour24: true                                                                                                                                                              
@@ -71,11 +137,11 @@ cards:
       ha-card {                                                                                                                                                               
         border: solid 2px var(--primary-color);                                                                                                                               
       }                                                                                                                                                                       
-    type: 'custom:mini-graph-card'                                                                                                                                            
-  - entities:                                   
-#      - sensor.upstairs_thermostat_temperature 
-      - sensor.weewx_inside_humidity         
+  - type: 'custom:mini-graph-card'                                                                                                                                            
+    entities:                                   
       - sensor.den_humidity               
+      - sensor.office_humidity               
+      - sensor.weewx_basement_humidity         
     name: Inside Humidity               
     group: false                               
     hour24: true                             
@@ -95,8 +161,8 @@ cards:
       ha-card {                                
         border: solid 2px var(--primary-color);
       }                                        
-    type: 'custom:mini-graph-card'             
-  - color_thresholds:                                                                                                                                                         
+  - type: 'custom:mini-graph-card'             
+    color_thresholds:                                                                                                                                                         
     - color: '#e45e65'                                                                                                                                                        
       value: 2000                                                                                                                                                             
     - color: '#e0b400'                                                                                                                                                        
@@ -124,5 +190,3 @@ cards:
       ha-card {                                                                                                                                                               
         border: solid 2px var(--primary-color);                                                                                                                               
       }                                                                                                                                                                       
-    type: 'custom:mini-graph-card'                                                                                                                                            
-

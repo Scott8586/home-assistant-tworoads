@@ -4,20 +4,18 @@ mode: single # Only run once at a time
 max_exceeded: silent # Hide warnings when triggered while in delay.
 trigger:
   platform: state
-  entity_id: binary_sensor.motion_tr_front_door
-  to: person
-  attribute: event_object
-#  to: 'on'
+  entity_id: binary_sensor.tr_front_door_motion
+  to: 'on'
 action:
 #  - delay: '15'
 #  - service: unifiprotect.save_thumbnail_image
   - service: camera.snapshot
     data:
-      entity_id: camera.tr_front_door
+      entity_id: camera.tr_front_door_high
       filename: "/config/www/snapshots/tr_front_door.png"
 #  - service: !secret telegram_notify
 #    data_template:
-#      message: "Person Front Door"
+#      message: "Motion at Front Door"
 #  - service: !secret telegram_notify
 #    data:
 #      title: ''

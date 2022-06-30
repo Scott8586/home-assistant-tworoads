@@ -6,9 +6,9 @@ badges:
   - entity: person.stephanie
   - entity: device_tracker.audi_a6_gps
   - entity: device_tracker.audi_q7_gps
-  - entity: device_tracker.toyota_rav4_bt
+  - entity: device_tracker.toyota_rav4_gps
 cards:
-  - type: 'vertical-stack'
+  - type: vertical-stack
     cards:
     - type: 'custom:button-card'
       entity: sensor.current_date_time
@@ -28,22 +28,67 @@ cards:
       theme: default
       type: weather-forecast
     - type: 'custom:sun-card'
-  - type: 'vertical-stack'
+  - type: entity-filter   
+    entities:
+      - entity: sensor.room_assistant_basement
+        secondary_info: last-changed  
+        state_filter: 
+          - operator: '!='
+            value: 'online'
+      - entity: sensor.room_assistant_den
+        secondary_info: last-changed  
+        state_filter: 
+          - operator: '!='
+            value: 'online'
+      - entity: sensor.room_assistant_garage
+        secondary_info: last-changed
+        state_filter:
+          - operator: '!='
+            value: 'online'
+      - entity: sensor.garage_cluster_leader 
+        secondary_info: last-changed
+        state_filter:
+          - operator: '!='
+            value: 'basement'
+      - entity: sensor.den_cluster_leader 
+        secondary_info: last-changed
+        state_filter:
+          - operator: '!='
+            value: 'basement'
+      - entity: sensor.basement_cluster_leader 
+        secondary_info: last-changed
+        state_filter:
+          - operator: '!='
+            value: 'basement'
+      - entity: sensor.tworoads_gps
+        secondary_info: last-changed
+        state_filter:                         
+          - operator: '!='
+            value: '3D Fix'   
+    card:           
+      type: entities        
+      title: Notifications   
+      show_empty: false
+      style: |
+        ha-card {                               
+          color: red;               
+        }            
+  - type: vertical-stack
     title: Cameras
     cards:
-     - entity: camera.tr_front_door
+     - entity: camera.tr_front_door_high
        type: picture-entity
-     - entity: camera.tr_side_yard
+     - entity: camera.tr_side_yard_high
        type: picture-entity
      - type: picture-elements
        elements: []
-       entity: binary_sensor.motion_tr_front_door
+       entity: binary_sensor.tr_front_door_motion
        camera_image: camera.front_door_snapshot
      - type: picture-elements
        elements: []
-       entity: binary_sensor.motion_tr_side_yard
+       entity: binary_sensor.tr_side_yard_side_yard
        camera_image: camera.side_yard_snapshot
-  - type: 'vertical-stack'
+  - type: vertical-stack
     name: HVAC
     cards:
     - type: custom:simple-thermostat
@@ -132,12 +177,13 @@ cards:
         service_data:                   
           mode: 4                       
       type: 'custom:button-card'        
-#  - type: 'custom:vertical-style-card'  
   - type: entities
+    title: Roomba
     entities:
     - vacuum.tr_roomba_e5
+    - sensor.tr_roomba_e5_battery_level
     - binary_sensor.tr_roomba_e5_bin_full
-  - type: 'custom:vertical-style-card'
+  - type: vertical-stack
     title: Power
     style:
       font_size: 22px

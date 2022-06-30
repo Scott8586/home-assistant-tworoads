@@ -15,6 +15,7 @@ action:
       /ping - request a test response.
       /reboot - reboot the HA host.
       /restart - restart the HA container.
+      /info - get basic house info
       /thermostat [home|away|status] - change thermostat mode.
       /weather - request a weather report.
       /usage - 24hr rolling internet usage.
