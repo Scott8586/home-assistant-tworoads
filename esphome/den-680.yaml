@@ -1,0 +1,65 @@
+esphome:
+  name: den-680
+  platform: ESP8266
+  board: nodemcuv2
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: "9282cee57c7c81d87537a9e4865df163"
+
+wifi:
+  ssid: "srp-tworoads"
+  password: "kicker87"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Den-680 Fallback Hotspot"
+    password: "YwSmoOq0IhXo"
+
+captive_portal:
+
+# Example configuration entry
+web_server:
+
+# Activates prometheus /metrics endpoint
+prometheus:
+
+# Example configuration entry
+time:
+  - platform: sntp
+    id: sntp_time
+    servers:
+      - 192.168.37.157
+      
+i2c:
+  sda: 4
+  scl: 5
+  scan: True
+
+bme680_bsec:
+  address: 0x77
+  
+sensor:
+  - platform: bme680_bsec
+    temperature:
+      name: "Den Temperature"
+    pressure:
+      name: "Den Pressure"
+    humidity:
+      name: "Den Humidity"
+    iaq:
+      name: "Den IAQ"
+    co2_equivalent:
+      name: "Den eCO2"
+    breath_voc_equivalent:
+      name: "Den eVOC"
+
+text_sensor:
+  - platform: bme680_bsec
+    iaq_accuracy:
+      name: "Den IAQ Accuracy"
